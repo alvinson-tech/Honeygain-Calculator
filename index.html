@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Honeygain Profit Sharing Calculator</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        :root {
+            --primary-color: #1a73e8;
+            --primary-hover: #1557b0;
+            --background-color: #ffffff;
+            --border-color: #e0e0e0;
+            --text-color: #333333;
+            --shadow: rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Space Mono', monospace;
+        }
+
+        body {
+            margin: 0;
+            padding: 2rem;
+            background-color: #f0f2f5;
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            background-color: white;
+            border-radius: 16px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+        }
+
+        .header {
+            text-align: left;
+            margin-bottom: 2.5rem;
+            padding: 1rem;
+            background: linear-gradient(145deg, #ffffff, #f6f7f9);
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .banner-image {
+            height: 80px;
+            width: auto;
+            border-radius: 8px;
+            object-fit: contain;
+            flex-shrink: 0;
+        }
+
+        .header-text {
+            flex: 1;
+            text-align: center;
+            min-width: 200px;
+        }
+
+        h1 {
+            color: var(--text-color);
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 0.9rem;
+            font-weight: 400;
+        }
+
+        .heart {
+            color: #e91e63;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        .form-group {
+            margin-bottom: 2rem;
+            background: #ffffff;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+            color: var(--text-color);
+        }
+
+        input[type="number"],
+        input[type="text"] {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 0.9rem;
+            transition: border-color 0.3s ease;
+            background: #f8f9fa;
+        }
+
+        /* Specific styles for GB input fields */
+        .start-gb,
+        .end-gb,
+        .data-shared {
+            width: 80px !important;
+            text-align: center;
+            padding: 0.75rem 0.5rem !important;
+            font-family: 'Space Mono', monospace;
+        }
+
+        .name-input {
+            width: 100% !important;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.1);
+            background: #ffffff;
+        }
+
+        input:read-only {
+            background-color: #f8f9fa;
+            cursor: not-allowed;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin: 1.5rem 0;
+            font-size: 0.9rem;
+            background: #ffffff;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        th {
+            background-color: #f8f9fa;
+            font-weight: 700;
+            text-align: center;
+            padding: 1rem;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+            text-align: center;
+        }
+
+        .data-cell {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .data-range {
+            font-size: 0.8rem;
+            color: #666;
+        }
+
+        tr:hover {
+            background-color: #f8f9fa;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            margin: 1.5rem 0;
+            justify-content: center;
+        }
+
+        button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(26, 115, 232, 0.3);
+            line-height: 1.4;
+        }
+
+        button:hover {
+            background-color: var(--primary-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(26, 115, 232, 0.4);
+        }
+
+        button span:first-child {
+            font-size: 0.85rem;
+            opacity: 0.9;
+        }
+
+        .results-section {
+            text-align: center;
+            background: linear-gradient(145deg, #ffffff, #f6f7f9);
+            padding: 2rem;
+            border-radius: 16px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+            margin-top: 2rem;
+            display: none;
+        }
+
+        .results-section h2 {
+            color: var(--text-color);
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            font-weight: 700;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .datetime-display {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+            color: #666;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 1rem;
+            background: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 0.5rem;
+            }
+
+            .container {
+                padding: 1rem;
+            }
+
+            .header {
+                flex-direction: column;
+                text-align: center;
+                padding: 0.75rem;
+            }
+
+            .banner-image {
+                height: 60px;
+                margin: 0 auto;
+            }
+
+            .header-text {
+                width: 100%;
+                padding: 0.5rem;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+                margin-bottom: 0.25rem;
+            }
+
+            .subtitle {
+                font-size: 0.8rem;
+            }
+
+            .form-group {
+                padding: 1rem;
+                margin-bottom: 1.5rem;
+            }
+
+            .start-gb,
+            .end-gb,
+            .data-shared {
+                width: 70px !important;
+                padding: 0.5rem 0.25rem !important;
+            }
+
+            input[type="number"],
+            input[type="text"] {
+                padding: 0.5rem;
+                font-size: 0.85rem;
+            }
+
+            table {
+                margin: 1rem 0;
+                font-size: 0.85rem;
+            }
+
+            th, td {
+                padding: 0.75rem 0.5rem;
+            }
+
+            .button-group {
+                margin: 1rem 0;
+                flex-direction: column;
+            }
+
+            button {
+                padding: 0.6rem 1.2rem;
+                font-size: 0.85rem;
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 0.75rem;
+            }
+
+            h1 {
+                font-size: 1.25rem;
+            }
+
+            .banner-image {
+                height: 50px;
+            }
+
+            .start-gb,
+            .end-gb,
+            .data-shared {
+                width: 60px !important;
+                font-size: 0.8rem;
+            }
+
+            .data-cell {
+                font-size: 0.8rem;
+            }
+
+            .data-range {
+                font-size: 0.75rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <img src="honeygain.jpeg" alt="Honeygain Banner" class="banner-image">
+            <div class="header-text">
+                <h1>Profit Sharing Calculator</h1>
+                <div class="subtitle">
+                    Coded with <span class="heart">❤️</span> by Alvin & [Claude AI 🤭] | All Rights Reserved
+                </div>
+            </div>
+        </div>
+        <form id="profitCalculator">
+            <div class="form-group">
+                <label for="totalAmount">Total Amount Earned (₹):</label>
+                <input type="number" id="totalAmount" placeholder="Enter amount after tax/fees" required>
+            </div>
+
+            <table id="dataTable">
+                <thead>
+                    <tr>
+                        <th>S.No</th>
+                        <th>Name</th>
+                        <th>Start GB</th>
+                        <th>End GB</th>
+                        <th>Data Shared (GB)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+            <div class="button-group">
+                <button type="button" onclick="calculateShares()" style="width: auto; min-width: 250px;">
+                    Calculate Individual Earnings
+                </button>
+            </div>
+        </form>
+        <div class="results-section" id="results-section">
+            <h2>Results</h2>
+            <div class="datetime-display" id="datetime">
+                <div id="date"></div>
+                <div id="time"></div>
+            </div>
+            <table id="resultsTable">
+                <thead>
+                    <tr>
+                        <th>S.No</th>
+                        <th>Name</th>
+                        <th>Data Shared (GB)</th>
+                        <th>Percentage Contribution</th>
+                        <th>Amount Earned (₹)</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+            <div class="button-group" style="justify-content: center; margin-top: 2rem;">
+                <button type="button" onclick="saveAsImage()" style="width: auto; min-width: 200px; display: flex; flex-direction: column; align-items: center; gap: 0.25rem;">
+                    <span id="totalEarnings">We Earned: ₹0/-</span>
+                    <span>Happy Honeygain</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const defaultNames = [
+            'Alvin | Xiaomi M2004J19PI',
+            'Ananya | Xiaomi 22120RN86I',
+            'Amulya | Oneplus CPH2423',
+            'Vallabh | Oneplus CPH2381',
+            'Kuttan | Samsung SM-M346B',
+            'Aditya | Samsung SM-M127G',
+            'Mohit | Realme RMX3868',
+            'ASS | Realme RMX3660',
+            'Alvin | Realme RMX3501',
+            'Ganesh | Motorola G71'
+        ];
+
+        function calculateDataShared(input) {
+            const row = input.closest('tr');
+            const startGB = parseFloat(row.querySelector('.start-gb').value) || 0;
+            const endGB = parseFloat(row.querySelector('.end-gb').value) || 0;
+            const dataShared = endGB - startGB;
+            
+            row.querySelector('.data-shared').value = dataShared > 0 ? dataShared.toFixed(2) : '0.00';
+        }
+
+        function calculateShares() {
+            const rows = document.querySelectorAll('#dataTable tbody tr');
+            const totalAmount = parseFloat(document.getElementById('totalAmount').value) || 0;
+            const resultsTable = document.getElementById('resultsTable').querySelector('tbody');
+            resultsTable.innerHTML = '';
+            
+            // Show the results section
+            document.querySelector('.results-section').style.display = 'block';
+            
+            // Update the total earnings display
+            document.getElementById('totalEarnings').textContent = `We Earned: ₹${totalAmount}/-`;
+
+            let totalData = 0;
+            const contributors = [];
+
+            rows.forEach((row, index) => {
+                const name = row.querySelector('td:nth-child(2) input').value;
+                const startGB = parseFloat(row.querySelector('.start-gb').value) || 0;
+                const endGB = parseFloat(row.querySelector('.end-gb').value) || 0;
+                const dataShared = parseFloat(row.querySelector('.data-shared').value) || 0;
+                
+                if (name && dataShared > 0) {
+                    contributors.push({ name, startGB, endGB, dataShared });
+                    totalData += dataShared;
+                }
+            });
+
+            if (totalData === 0 || totalAmount === 0) {
+                alert('Please enter valid data and amount to calculate shares.');
+                document.querySelector('.results-section').style.display = 'none';
+                return;
+            }
+
+            contributors.forEach((contributor, index) => {
+                const percentage = ((contributor.dataShared / totalData) * 100).toFixed(2);
+                const earned = ((percentage / 100) * totalAmount).toFixed(2);
+
+                resultsTable.insertAdjacentHTML('beforeend', `
+                    <tr>
+                        <td>${index + 1}</td>
+                        <td>${contributor.name}</td>
+                        <td class="data-cell">
+                            <div>${contributor.dataShared.toFixed(2)}</div>
+                            <div class="data-range">(${contributor.startGB.toFixed(2)} → ${contributor.endGB.toFixed(2)})</div>
+                        </td>
+                        <td>${percentage}%</td>
+                        <td>₹${earned}</td>
+                    </tr>
+                `);
+            });
+            
+            // Update the date and time
+            updateDateTime();
+        }
+
+        function saveAsImage() {
+            const element = document.querySelector('.results-section');
+            
+            const originalBackground = element.style.background;
+            element.style.background = '#ffffff';
+
+            html2canvas(element, {
+                backgroundColor: '#ffffff',
+                scale: 2,
+                logging: false,
+                useCORS: true
+            }).then(canvas => {
+                element.style.background = originalBackground;
+                
+                const link = document.createElement('a');
+                link.download = `HoneygainResults_${new Date().toLocaleDateString('en-US').replace(/\//g, '-')}.png`;
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+            });
+        }
+
+        function updateDateTime() {
+            const now = new Date();
+            const dateString = now.toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+            const timeString = now.toLocaleString('en-US', {
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: true
+            });
+            document.getElementById('date').textContent = `Date: ${dateString}`;
+            document.getElementById('time').textContent = `Time: ${timeString}`;
+        }
+
+        window.onload = function() {
+            const tbody = document.getElementById('dataTable').querySelector('tbody');
+            for (let i = 0; i < 10; i++) {
+                tbody.insertAdjacentHTML('beforeend', `
+                    <tr>
+                        <td>${i + 1}</td>
+                        <td><input type="text" class="name-input" placeholder="Enter name" value="${defaultNames[i]}"></td>
+                        <td><input type="number" placeholder="GB" class="start-gb" oninput="calculateDataShared(this)" step="0.01" min="0"></td>
+                        <td><input type="number" placeholder="GB" class="end-gb" oninput="calculateDataShared(this)" step="0.01" min="0"></td>
+                        <td><input type="number" placeholder="Data" class="data-shared" readonly step="0.01"></td>
+                    </tr>
+                `);
+            }
+        }
+
+        updateDateTime();
+        setInterval(updateDateTime, 1000);
+    </script>
+</body>
+</html>
