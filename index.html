@@ -503,20 +503,6 @@
             </div>
         </div>
 
-        <div class="jmpt-widget">
-            <div class="jmpt-content">
-                <div class="jmpt-icon">💎</div>
-                <div class="jmpt-info">
-                    <div class="jmpt-label">Current JMPT Price</div>
-                    <div class="jmpt-price-container">
-                        <div class="jmpt-rate" id="jmptRate">Loading...</div>
-                        <div class="jmpt-change" id="jmptChange"></div>
-                    </div>
-                </div>
-                <div class="jmpt-updated" id="jmptUpdated">Updating...</div>
-            </div>
-        </div>
-
         <div class="input-grid">
             <div class="converter-section">
                 <label>Credits to Money Converter:</label>
@@ -605,38 +591,6 @@
             'Mohit | Realme RMX3868',
             'Aditya | Samsung SM-M127G'
         ];
-
-        // JMPT Price Fetching
-        async function fetchJMPTPrice() {
-            try {
-                const response = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=jumpy-token&vs_currencies=usd&include_24hr_change=true');
-                const data = await response.json();
-                
-                const price = data['jumpy-token'].usd;
-                const change24h = data['jumpy-token'].usd_24h_change;
-                
-                // Update price display
-                const jmptRate = document.getElementById('jmptRate');
-                const jmptChange = document.getElementById('jmptChange');
-                
-                jmptRate.textContent = `$${price.toFixed(4)}`;
-                jmptRate.classList.remove('loading');
-                
-                // Update price change with arrow and color
-                const changeValue = change24h.toFixed(2);
-                const arrow = changeValue >= 0 ? '↑' : '↓';
-                jmptChange.textContent = `${arrow} ${Math.abs(changeValue)}%`;
-                jmptChange.className = 'jmpt-change ' + (changeValue >= 0 ? 'price-up' : 'price-down');
-                
-                // Update timestamp
-                updateJMPTDisplay();
-                
-            } catch (error) {
-                console.error('Error fetching JMPT price:', error);
-                document.getElementById('jmptRate').textContent = 'Error loading price';
-                document.getElementById('jmptUpdated').textContent = 'Failed to update';
-            }
-        }
 
         // Converter Functions
         function convertCredits() {
@@ -759,17 +713,6 @@
             document.getElementById('time').textContent = `Time: ${timeString}`;
         }
 
-        function updateJMPTDisplay() {
-            const now = new Date();
-            const timeString = now.toLocaleString('en-US', {
-                hour: '2-digit',
-                minute: '2-digit',
-                second: '2-digit',
-                hour12: true
-            });
-            document.getElementById('jmptUpdated').textContent = `Last updated: ${timeString}`;
-        }
-
         // Initialize the page
         window.onload = function() {
             const tbody = document.getElementById('dataTable').querySelector('tbody');
@@ -784,10 +727,6 @@
                     </tr>
                 `);
             }
-            
-            // Initial JMPT price fetch and setup auto-refresh
-            fetchJMPTPrice();
-            setInterval(fetchJMPTPrice, 120000); // Refresh every 2 minutes
             
             updateDateTime();
             setInterval(updateDateTime, 1000);
