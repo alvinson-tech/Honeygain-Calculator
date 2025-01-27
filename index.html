@@ -91,10 +91,145 @@
             animation: pulse 1.5s infinite;
         }
 
+        /* JMPT Widget Styles */
+        .jmpt-widget {
+            background: linear-gradient(145deg, #ffffff, #f6f7f9);
+            border-radius: 12px;
+            padding: 1rem;
+            margin: 1rem 0;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .jmpt-content {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.5rem;
+            background: #ffffff;
+            border-radius: 8px;
+        }
+
+        .jmpt-icon {
+            font-size: 1.5rem;
+            animation: pulse 2s infinite;
+        }
+
+        .jmpt-info {
+            flex: 1;
+        }
+
+        .jmpt-label {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 0.25rem;
+        }
+
+        .jmpt-price-container {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .jmpt-rate {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .jmpt-change {
+            font-size: 0.9rem;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+
+        .jmpt-updated {
+            font-size: 0.8rem;
+            color: #888;
+            text-align: right;
+        }
+
+        .price-up {
+            color: #4caf50;
+            background-color: rgba(76, 175, 80, 0.1);
+        }
+
+        .price-down {
+            color: #f44336;
+            background-color: rgba(244, 67, 54, 0.1);
+        }
+
+        @keyframes blink {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        #jmptRate.loading {
+            animation: blink 1s infinite;
+        }
+
         @keyframes pulse {
             0% { transform: scale(1); }
             50% { transform: scale(1.2); }
             100% { transform: scale(1); }
+        }
+
+        .info-section {
+            background: linear-gradient(145deg, #ffffff, #f6f7f9);
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            text-align: center;
+        }
+
+        .info-section .tagline {
+            font-size: 1.2rem;
+            color: var(--primary-color);
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .info-section .conversion-info {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .info-section .conversion-item {
+            background: #ffffff;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .input-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .converter-section {
+            background: #ffffff;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .converter-grid {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .converter-arrow {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+            text-align: center;
         }
 
         .form-group {
@@ -124,7 +259,6 @@
             background: #f8f9fa;
         }
 
-        /* Specific styles for GB input fields */
         .start-gb,
         .end-gb,
         .data-shared {
@@ -148,6 +282,27 @@
         input:read-only {
             background-color: #f8f9fa;
             cursor: not-allowed;
+        }
+
+        .conversion-results {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            background: #f8f9fa;
+            padding: 0.75rem;
+            border-radius: 8px;
+            min-width: 120px;
+            text-align: center;
+        }
+
+        .credits-input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 0.9rem;
+            transition: border-color 0.3s ease;
+            background: #f8f9fa;
         }
 
         table {
@@ -219,11 +374,6 @@
             box-shadow: 0 6px 20px rgba(26, 115, 232, 0.4);
         }
 
-        button span:first-child {
-            font-size: 0.85rem;
-            opacity: 0.9;
-        }
-
         .results-section {
             text-align: center;
             background: linear-gradient(145deg, #ffffff, #f6f7f9);
@@ -232,14 +382,6 @@
             box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
             margin-top: 2rem;
             display: none;
-        }
-
-        .results-section h2 {
-            color: var(--text-color);
-            font-size: 1.5rem;
-            margin-bottom: 1.5rem;
-            font-weight: 700;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
         }
 
         .datetime-display {
@@ -255,63 +397,6 @@
             background: #ffffff;
             border-radius: 8px;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-        }
-
-        .info-section {
-            background: linear-gradient(145deg, #ffffff, #f6f7f9);
-            padding: 1.5rem;
-            border-radius: 12px;
-            margin-bottom: 2rem;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-            text-align: center;
-        }
-
-        .info-section .tagline {
-            font-size: 1.2rem;
-            color: var(--primary-color);
-            font-weight: 700;
-            margin-bottom: 1rem;
-        }
-
-        .info-section .conversion-info {
-            display: flex;
-            justify-content: center;
-            gap: 2rem;
-            flex-wrap: wrap;
-        }
-
-        .info-section .conversion-item {
-            background: #ffffff;
-            padding: 0.75rem 1.5rem;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-        }
-
-        .input-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-
-        .converter-section {
-            background: #ffffff;
-            padding: 1.5rem;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-        }
-
-        .converter-grid {
-            display: grid;
-            grid-template-columns: 1fr auto 1fr;
-            gap: 1rem;
-            align-items: center;
-        }
-
-        .converter-arrow {
-            font-size: 1.5rem;
-            color: var(--primary-color);
-            text-align: center;
         }
 
         @media (max-width: 768px) {
@@ -334,65 +419,14 @@
                 margin: 0 auto;
             }
 
-            .header-text {
-                width: 100%;
-                padding: 0.5rem;
-            }
-
-            h1 {
-                font-size: 1.5rem;
-                margin-bottom: 0.25rem;
-            }
-
-            .subtitle {
-                font-size: 0.8rem;
-            }
-
-            .form-group {
-                padding: 1rem;
-                margin-bottom: 1.5rem;
-            }
-
-            .start-gb,
-            .end-gb,
-            .data-shared {
-                width: 70px !important;
-                padding: 0.5rem 0.25rem !important;
-            }
-
-            input[type="number"],
-            input[type="text"] {
-                padding: 0.5rem;
-                font-size: 0.85rem;
-            }
-
-            table {
-                margin: 1rem 0;
-                font-size: 0.85rem;
-            }
-
-            th, td {
-                padding: 0.75rem 0.5rem;
-            }
-
-            .button-group {
-                margin: 1rem 0;
+            .jmpt-content {
                 flex-direction: column;
+                text-align: center;
+                gap: 0.5rem;
             }
 
-            button {
-                padding: 0.6rem 1.2rem;
-                font-size: 0.85rem;
-                width: 100%;
-            }
-
-            .input-grid {
-                grid-template-columns: 1fr;
-                gap: 1rem;
-            }
-
-            .info-section .conversion-info {
-                gap: 1rem;
+            .jmpt-updated {
+                text-align: center;
             }
 
             .converter-grid {
@@ -403,6 +437,19 @@
             .converter-arrow {
                 transform: rotate(90deg);
                 margin: 0.5rem 0;
+            }
+
+            .input-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+
+            button {
+                width: 100%;
             }
         }
 
@@ -447,6 +494,21 @@
                 </div>
             </div>
         </div>
+
+        <div class="jmpt-widget">
+            <div class="jmpt-content">
+                <div class="jmpt-icon">💎</div>
+                <div class="jmpt-info">
+                    <div class="jmpt-label">Current JMPT Price</div>
+                    <div class="jmpt-price-container">
+                        <div class="jmpt-rate" id="jmptRate">Loading...</div>
+                        <div class="jmpt-change" id="jmptChange"></div>
+                    </div>
+                </div>
+                <div class="jmpt-updated" id="jmptUpdated">Updating...</div>
+            </div>
+        </div>
+
         <div class="info-section">
             <div class="tagline">Turn Your Unused Internet into Sweet Cash with Honeygain! 🍯💸</div>
             <div class="conversion-info">
@@ -454,21 +516,33 @@
                 <div class="conversion-item">1 Credit = 10MB Data</div>
             </div>
         </div>
-        <form id="profitCalculator">
-            <div class="input-grid">
-                <div class="form-group">
-                    <label for="totalAmount">Total Amount Earned (₹):</label>
-                    <input type="number" id="totalAmount" placeholder="Enter amount after tax/fees" required>
-                </div>
 
-                <div class="converter-section">
-                    <label>MB to GB Converter:</label>
-                    <div class="converter-grid">
-                        <input type="number" id="mbInput" placeholder="Enter MB" class="mb-input" oninput="convertMbToGb()">
-                        <div class="converter-arrow">🌐</div>
-                        <input type="number" id="gbInput" placeholder="Enter GB" class="gb-input" oninput="convertGbToMb()">
+        <div class="input-grid">
+            <div class="converter-section">
+                <label>Credits to Money Converter:</label>
+                <div class="converter-grid">
+                    <input type="number" id="creditsInput" placeholder="Enter Credits" class="credits-input" oninput="convertCredits()">
+                    <div class="converter-arrow">💱</div>
+                    <div class="conversion-results">
+                        <div id="dollarResult">$0.00</div>
                     </div>
                 </div>
+            </div>
+            
+            <div class="converter-section">
+                <label>MB to GB Converter:</label>
+                <div class="converter-grid">
+                    <input type="number" id="mbInput" placeholder="Enter MB" class="mb-input" oninput="convertMbToGb()">
+                    <div class="converter-arrow">🌐</div>
+                    <input type="number" id="gbInput" placeholder="Enter GB" class="gb-input" oninput="convertGbToMb()">
+                </div>
+            </div>
+        </div>
+
+        <form id="profitCalculator">
+            <div class="form-group">
+                <label for="totalAmount">Total Amount Earned (₹):</label>
+                <input type="number" id="totalAmount" placeholder="Enter amount after tax/fees" required>
             </div>
 
             <table id="dataTable">
@@ -490,6 +564,7 @@
                 </button>
             </div>
         </form>
+
         <div class="results-section" id="results-section">
             <h2>Results</h2>
             <div class="datetime-display" id="datetime">
@@ -531,13 +606,46 @@
             'Aditya | Samsung SM-M127G'
         ];
 
-        function calculateDataShared(input) {
-            const row = input.closest('tr');
-            const startGB = parseFloat(row.querySelector('.start-gb').value) || 0;
-            const endGB = parseFloat(row.querySelector('.end-gb').value) || 0;
-            const dataShared = endGB - startGB;
+        // JMPT Price Fetching
+        async function fetchJMPTPrice() {
+            try {
+                const response = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=jumpy-token&vs_currencies=usd&include_24hr_change=true');
+                const data = await response.json();
+                
+                const price = data['jumpy-token'].usd;
+                const change24h = data['jumpy-token'].usd_24h_change;
+                
+                // Update price display
+                const jmptRate = document.getElementById('jmptRate');
+                const jmptChange = document.getElementById('jmptChange');
+                
+                jmptRate.textContent = `$${price.toFixed(4)}`;
+                jmptRate.classList.remove('loading');
+                
+                // Update price change with arrow and color
+                const changeValue = change24h.toFixed(2);
+                const arrow = changeValue >= 0 ? '↑' : '↓';
+                jmptChange.textContent = `${arrow} ${Math.abs(changeValue)}%`;
+                jmptChange.className = 'jmpt-change ' + (changeValue >= 0 ? 'price-up' : 'price-down');
+                
+                // Update timestamp
+                updateJMPTDisplay();
+                
+            } catch (error) {
+                console.error('Error fetching JMPT price:', error);
+                document.getElementById('jmptRate').textContent = 'Error loading price';
+                document.getElementById('jmptUpdated').textContent = 'Failed to update';
+            }
+        }
+
+        // Converter Functions
+        function convertCredits() {
+            const creditsInput = document.getElementById('creditsInput');
+            const dollarResult = document.getElementById('dollarResult');
             
-            row.querySelector('.data-shared').value = dataShared > 0 ? dataShared.toFixed(2) : '0.00';
+            const credits = parseFloat(creditsInput.value) || 0;
+            const dollars = (credits / 1000).toFixed(2);
+            dollarResult.textContent = `$${dollars}`;
         }
 
         function convertMbToGb() {
@@ -554,16 +662,22 @@
             mbInput.value = Math.round(gb * 1024);
         }
 
+        function calculateDataShared(input) {
+            const row = input.closest('tr');
+            const startGB = parseFloat(row.querySelector('.start-gb').value) || 0;
+            const endGB = parseFloat(row.querySelector('.end-gb').value) || 0;
+            const dataShared = endGB - startGB;
+            
+            row.querySelector('.data-shared').value = dataShared > 0 ? dataShared.toFixed(2) : '0.00';
+        }
+
         function calculateShares() {
             const rows = document.querySelectorAll('#dataTable tbody tr');
             const totalAmount = parseFloat(document.getElementById('totalAmount').value) || 0;
             const resultsTable = document.getElementById('resultsTable').querySelector('tbody');
             resultsTable.innerHTML = '';
             
-            // Show the results section
             document.querySelector('.results-section').style.display = 'block';
-            
-            // Update the total earnings display
             document.getElementById('totalEarnings').textContent = `We Earned: ₹${totalAmount}/-`;
 
             let totalData = 0;
@@ -605,7 +719,6 @@
                 `);
             });
             
-            // Update the date and time
             updateDateTime();
         }
 
@@ -646,6 +759,18 @@
             document.getElementById('time').textContent = `Time: ${timeString}`;
         }
 
+        function updateJMPTDisplay() {
+            const now = new Date();
+            const timeString = now.toLocaleString('en-US', {
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+                hour12: true
+            });
+            document.getElementById('jmptUpdated').textContent = `Last updated: ${timeString}`;
+        }
+
+        // Initialize the page
         window.onload = function() {
             const tbody = document.getElementById('dataTable').querySelector('tbody');
             for (let i = 0; i < 10; i++) {
@@ -659,10 +784,14 @@
                     </tr>
                 `);
             }
-        }
-
-        updateDateTime();
-        setInterval(updateDateTime, 1000);
+            
+            // Initial JMPT price fetch and setup auto-refresh
+            fetchJMPTPrice();
+            setInterval(fetchJMPTPrice, 120000); // Refresh every 2 minutes
+            
+            updateDateTime();
+            setInterval(updateDateTime, 1000);
+        };
     </script>
 </body>
 </html>
