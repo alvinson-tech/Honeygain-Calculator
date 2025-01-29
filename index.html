@@ -6,508 +6,593 @@
     <title>Honeygain Calculator</title>
     <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    <style>
-        :root {
-            --primary-color: #1a73e8;
-            --primary-hover: #1557b0;
-            --background-color: #ffffff;
-            --border-color: #e0e0e0;
-            --text-color: #333333;
-            --shadow: rgba(0, 0, 0, 0.1);
+    <style> 
+    :root {
+        --primary-color: #22D3EE;
+        --primary-hover: #06B6D4;
+        --background-color: #0F172A;
+        --card-background: #1E293B;
+        --border-color: #334155;
+        --text-color: #F1F5F9;
+        --text-muted: #94A3B8;
+        --shadow: rgba(0, 0, 0, 0.25);
+        --success-color: #34D399;
+        --accent-gradient: linear-gradient(135deg, #22c1da, #06a1bc);
+    }
+    
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Space Mono', monospace;
+    }
+    
+    body {
+        margin: 0;
+        padding: 2rem;
+        background-color: var(--background-color);
+        color: var(--text-color);
+        line-height: 1.6;
+        background-image:
+            radial-gradient(circle at 1px 1px, var(--border-color) 1px, transparent 0);
+        background-size: 30px 30px;
+    }
+    
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem;
+        background-color: var(--card-background);
+        border-radius: 24px;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+        border: 1px solid var(--border-color);
+    }
+    
+    .header {
+        text-align: left;
+        margin-bottom: 2.5rem;
+        padding: 1.5rem;
+        background: linear-gradient(145deg, #1E293B, #0F172A);
+        border-radius: 16px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+        flex-wrap: wrap;
+        border: 1px solid var(--border-color);
+    }
+    
+    .banner-image {
+        height: 80px;
+        width: auto;
+        border-radius: 12px;
+        object-fit: contain;
+        flex-shrink: 0;
+        filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.3));
+    }
+    
+    .header-text {
+        flex: 1;
+        text-align: center;
+        min-width: 200px;
+    }
+    
+    h1 {
+        color: var(--text-color);
+        font-size: 2.25rem;
+        margin-bottom: 0.5rem;
+        font-weight: 700;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        background: var(--accent-gradient);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+    
+    .subtitle {
+        color: var(--text-muted);
+        font-size: 0.9rem;
+        font-weight: 400;
+    }
+    
+    .heart {
+        color: #F43F5E;
+        animation: pulse 1.5s infinite;
+    }
+    
+    .credits-info {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+        margin-bottom: 1rem;
+        padding: 1rem;
+        background: rgba(255, 255, 255, 0.03);
+        border-radius: 12px;
+        border: 1px solid var(--border-color);
+    }
+    
+    .credits-display {
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.9rem;
+        color: var(--text-muted);
+    }
+    
+    .credits-display span {
+        font-weight: 700;
+        color: var(--primary-color);
+    }
+    
+    .checkbox-container {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.75rem;
+        background: rgba(255, 255, 255, 0.03);
+        border-radius: 12px;
+        border: 1px solid var(--border-color);
+    }
+    
+    .checkbox-container input[type="checkbox"] {
+        width: 18px;
+        height: 18px;
+        cursor: pointer;
+        accent-color: var(--primary-color);
+    }
+    
+    .checkbox-container label {
+        margin: 0;
+        font-size: 0.9rem;
+        cursor: pointer;
+        color: var(--text-muted);
+    }
+    
+    .earned-credits {
+        color: var(--success-color);
+        font-weight: 700;
+    }
+    
+    .input-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2rem;
+        margin-bottom: 2rem;
+    }
+    
+    .converter-section {
+        background: linear-gradient(145deg, #1E293B, #0F172A);
+        padding: 1.5rem;
+        border-radius: 16px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        border: 1px solid var(--border-color);
+    }
+    
+    .converter-grid {
+        display: grid;
+        grid-template-columns: 1fr auto 1fr;
+        gap: 1rem;
+        align-items: center;
+    }
+    
+    .converter-arrow {
+        font-size: 1.5rem;
+        color: var(--primary-color);
+        text-align: center;
+    }
+    
+    .form-group {
+        margin-bottom: 2rem;
+        background: linear-gradient(145deg, #1E293B, #0F172A);
+        padding: 1.5rem;
+        border-radius: 16px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        border: 1px solid var(--border-color);
+    }
+    
+    label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 600;
+        color: var(--text-color);
+    }
+    
+    input[type="number"],
+    input[type="text"] {
+        width: 100%;
+        padding: 0.75rem;
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        font-size: 0.9rem;
+        transition: all 0.3s ease;
+        background: rgba(255, 255, 255, 0.03);
+        color: var(--text-color);
+    }
+    
+    .start-gb,
+    .end-gb,
+    .data-shared {
+        width: 80px !important;
+        text-align: center;
+        padding: 0.75rem 0.5rem !important;
+        font-family: 'Space Mono', monospace;
+    }
+    
+    .name-input {
+        width: 100% !important;
+    }
+    
+    input:focus {
+        outline: none;
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.2);
+        background: rgba(255, 255, 255, 0.05);
+    }
+    
+    input:read-only {
+        background-color: rgba(0, 0, 0, 0.2);
+        cursor: not-allowed;
+    }
+    
+    .conversion-results {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+        background: rgba(255, 255, 255, 0.03);
+        padding: 1rem;
+        border-radius: 12px;
+        min-width: 120px;
+        text-align: center;
+        border: 1px solid var(--border-color);
+        color: var(--success-color);
+        font-weight: 700;
+        font-size: 1.1rem;
+    }
+    
+    table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+        margin: 1.5rem 0;
+        font-size: 0.9rem;
+        background: linear-gradient(145deg, #1E293B, #0F172A);
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        border: 1px solid var(--border-color);
+    }
+    
+    th {
+        background-color: rgba(255, 255, 255, 0.03);
+        font-weight: 700;
+        text-align: center;
+        padding: 1rem;
+        border-bottom: 2px solid var(--border-color);
+        color: var(--primary-color);
+    }
+    
+    td {
+        padding: 1rem;
+        border-bottom: 1px solid var(--border-color);
+        text-align: center;
+        color: var(--text-color);
+    }
+    
+    .data-cell {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .data-range {
+        font-size: 0.8rem;
+        color: var(--text-muted);
+    }
+    
+    tr:hover {
+        background-color: rgba(255, 255, 255, 0.03);
+    }
+    
+    .button-group {
+        display: flex;
+        gap: 1rem;
+        margin: 1.5rem 0;
+        justify-content: center;
+    }
+    
+    button {
+        background: var(--accent-gradient);
+        color: white;
+        border: none;
+        padding: 0.75rem 1.5rem;
+        border-radius: 12px;
+        font-weight: 700;
+        font-size: 0.9rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(34, 211, 238, 0.2);
+        line-height: 1.4;
+    }
+    
+    button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(34, 211, 238, 0.3);
+        filter: brightness(1.1);
+    }
+    
+    .results-section {
+        text-align: center;
+        background: linear-gradient(145deg, #1E293B, #0F172A);
+        padding: 2rem;
+        border-radius: 16px;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+        margin-top: 2rem;
+        display: none;
+        border: 1px solid var(--border-color);
+    }
+    
+    .datetime-display {
+        text-align: center;
+        margin-bottom: 1.5rem;
+        font-size: 0.9rem;
+        color: var(--text-muted);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 1rem;
+        background: rgba(255, 255, 255, 0.03);
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        border: 1px solid var(--border-color);
+    }
+    
+    .nav-buttons {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+        width: 100%;
+        padding: 1.5rem;
+    }
+    
+    .nav-button {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(145deg, #1E293B, #0F172A);
+        padding: 1.5rem;
+        border-radius: 16px;
+        text-decoration: none;
+        color: var(--text-color);
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        text-align: center;
+        border: 1px solid var(--border-color);
+        height: 100%;
+        width: 100%;
+    }
+    
+    .nav-button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        border-color: var(--primary-color);
+        background: linear-gradient(145deg, #1E293B, #0F172A);
+    }
+    
+    .nav-button-icon {
+        font-size: 2rem;
+        margin-bottom: 0.5rem;
+        color: var(--primary-color);
+    }
+    
+    .nav-button-label {
+        font-weight: 700;
+        font-size: 0.9rem;
+    }
+    
+    .nav-button-subtitle {
+        font-size: 0.8rem;
+        color: var(--text-muted);
+        margin-top: 0.25rem;
+    }
+
+    .audio-controls {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
         }
 
-        * {
-            margin: 0;
+        .audio-button {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
             padding: 0;
-            box-sizing: border-box;
-            font-family: 'Space Mono', monospace;
         }
 
+        .audio-button:hover {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .audio-icon {
+            width: 16px;
+            height: 16px;
+            opacity: 0.7;
+            transition: opacity 0.2s ease;
+        }
+
+        .audio-button:hover .audio-icon {
+            opacity: 0.9;
+        }
+    
+    @keyframes pulse {
+        0% {
+            transform: scale(1);
+        }
+    
+        50% {
+            transform: scale(1.2);
+        }
+    
+        100% {
+            transform: scale(1);
+        }
+    }
+    
+    @media (max-width: 768px) {
         body {
-            margin: 0;
-            padding: 2rem;
-            background-color: #f0f2f5;
-            color: var(--text-color);
-            line-height: 1.6;
-            background-image: 
-                linear-gradient(rgba(240, 242, 245, 0.8) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(240, 242, 245, 0.8) 1px, transparent 1px);
-            background-size: 20px 20px;
-            background-color: #ffffff;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 2rem;
-            background-color: white;
-            border-radius: 16px;
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
-        }
-
-        .header {
-            text-align: left;
-            margin-bottom: 2.5rem;
-            padding: 1rem;
-            background: linear-gradient(145deg, #ffffff, #f6f7f9);
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            flex-wrap: wrap;
-        }
-
-        .banner-image {
-            height: 80px;
-            width: auto;
-            border-radius: 8px;
-            object-fit: contain;
-            flex-shrink: 0;
-        }
-
-        .header-text {
-            flex: 1;
-            text-align: center;
-            min-width: 200px;
-        }
-
-        h1 {
-            color: var(--text-color);
-            font-size: 2rem;
-            margin-bottom: 0.5rem;
-            font-weight: 700;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
-        }
-
-        .subtitle {
-            color: #666;
-            font-size: 0.9rem;
-            font-weight: 400;
-        }
-
-        .heart {
-            color: #e91e63;
-            animation: pulse 1.5s infinite;
-        }
-
-        /* JMPT Widget Styles */
-        .jmpt-widget {
-            background: linear-gradient(145deg, #ffffff, #f6f7f9);
-            border-radius: 12px;
-            padding: 1rem;
-            margin: 1rem 0;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-        }
-
-        .jmpt-content {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
             padding: 0.5rem;
-            background: #ffffff;
-            border-radius: 8px;
         }
-
-        .jmpt-icon {
-            font-size: 1.5rem;
-            animation: pulse 2s infinite;
+    
+        .container {
+            padding: 1rem;
         }
-
-        .jmpt-info {
-            flex: 1;
+    
+        .header {
+            flex-direction: column;
+            text-align: center;
+            padding: 1rem;
         }
-
-        .jmpt-label {
-            font-size: 0.9rem;
-            color: #666;
-            margin-bottom: 0.25rem;
+    
+        .banner-image {
+            height: 60px;
+            margin: 0 auto;
         }
-
-        .jmpt-price-container {
-            display: flex;
-            align-items: center;
+    
+        .converter-grid {
+            grid-template-columns: 1fr;
             gap: 0.5rem;
         }
-
-        .jmpt-rate {
-            font-size: 1.2rem;
-            font-weight: 700;
-            color: var(--primary-color);
-        }
-
-        .jmpt-change {
-            font-size: 0.9rem;
-            padding: 0.2rem 0.5rem;
-            border-radius: 4px;
-            font-weight: 600;
-        }
-
-        .jmpt-updated {
-            font-size: 0.8rem;
-            color: #888;
-            text-align: right;
-        }
-
-        .price-up {
-            color: #4caf50;
-            background-color: rgba(76, 175, 80, 0.1);
-        }
-
-        .price-down {
-            color: #f44336;
-            background-color: rgba(244, 67, 54, 0.1);
-        }
-
-        @keyframes blink {
-            0% { opacity: 1; }
-            50% { opacity: 0.5; }
-            100% { opacity: 1; }
-        }
-
-        #jmptRate.loading {
-            animation: blink 1s infinite;
-        }
-
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.2); }
-            100% { transform: scale(1); }
-        }
-
-        .info-section {
-            background: linear-gradient(145deg, #ffffff, #f6f7f9);
-            padding: 1.5rem;
-            border-radius: 12px;
-            margin-bottom: 2rem;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-            text-align: center;
-        }
-
-        .info-section .tagline {
-            font-size: 1.2rem;
-            color: var(--primary-color);
-            font-weight: 700;
-            margin-bottom: 1rem;
-        }
-
-        .info-section .conversion-info {
-            display: flex;
-            justify-content: center;
-            gap: 2rem;
-            flex-wrap: wrap;
-        }
-
-        .info-section .conversion-item {
-            background: #ffffff;
-            padding: 0.75rem 1.5rem;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-        }
-
-        .input-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-
-        .converter-section {
-            background: #ffffff;
-            padding: 1.5rem;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-        }
-
-        .converter-grid {
-            display: grid;
-            grid-template-columns: 1fr auto 1fr;
-            gap: 1rem;
-            align-items: center;
-        }
-
+    
         .converter-arrow {
-            font-size: 1.5rem;
-            color: var(--primary-color);
-            text-align: center;
+            transform: rotate(90deg);
+            margin: 0.5rem 0;
         }
-
-        .form-group {
-            margin-bottom: 2rem;
-            background: #ffffff;
-            padding: 1rem;
-            min-height: auto;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    
+        .input-grid {
+            grid-template-columns: 1fr;
+            gap: 1rem;
         }
-
-        label {
-            display: block;
-            margin-bottom: 0.25rem;
-            font-weight: 700;
-            color: var(--text-color);
+    
+        .button-group {
+            flex-direction: column;
         }
-
-        input[type="number"],
-        input[type="text"] {
+    
+        .nav-buttons {
+            grid-template-columns: 1fr;
+        }
+    
+        button {
             width: 100%;
-            padding: 0.75rem;
-            border: 2px solid var(--border-color);
-            border-radius: 8px;
-            font-size: 0.9rem;
-            transition: border-color 0.3s ease;
-            background: #f8f9fa;
         }
 
+        .audio-controls {
+                top: 15px;
+                right: 15px;
+            }
+            
+            .audio-button {
+                width: 28px;
+                height: 28px;
+            }
+
+            .audio-icon {
+                width: 14px;
+                height: 14px;
+            }
+    }
+    
+    @media (max-width: 480px) {
+        .container {
+            padding: 0.75rem;
+        }
+    
+        h1 {
+            font-size: 1.25rem;
+        }
+    
+        .banner-image {
+            height: 50px;
+        }
+    
         .start-gb,
         .end-gb,
         .data-shared {
-            width: 80px !important;
-            text-align: center;
-            padding: 0.75rem 0.5rem !important;
-            font-family: 'Space Mono', monospace;
-        }
-
-        .name-input {
-            width: 100% !important;
-        }
-
-        input:focus {
-            outline: none;
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.1);
-            background: #ffffff;
-        }
-
-        input:read-only {
-            background-color: #f8f9fa;
-            cursor: not-allowed;
-        }
-
-        .conversion-results {
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-            background: #f8f9fa;
-            padding: 0.75rem;
-            border-radius: 8px;
-            min-width: 120px;
-            text-align: center;
-        }
-
-        .credits-input {
-            width: 100%;
-            padding: 0.75rem;
-            border: 2px solid var(--border-color);
-            border-radius: 8px;
-            font-size: 0.9rem;
-            transition: border-color 0.3s ease;
-            background: #f8f9fa;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: separate;
-            border-spacing: 0;
-            margin: 1.5rem 0;
-            font-size: 0.9rem;
-            background: #ffffff;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-        }
-
-        th {
-            background-color: #f8f9fa;
-            font-weight: 700;
-            text-align: center;
-            padding: 1rem;
-            border-bottom: 2px solid var(--border-color);
-        }
-
-        td {
-            padding: 1rem;
-            border-bottom: 1px solid var(--border-color);
-            text-align: center;
-        }
-
-        .data-cell {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .data-range {
+            width: 60px !important;
             font-size: 0.8rem;
-            color: #666;
         }
-
-        tr:hover {
-            background-color: #f8f9fa;
+    
+        .data-cell {
+            font-size: 0.8rem;
         }
-
-        .button-group {
-            display: flex;
-            gap: 1rem;
-            margin: 1.5rem 0;
-            justify-content: center;
+    
+        .data-range {
+            font-size: 0.75rem;
         }
-
-        button {
-            background-color: var(--primary-color);
-            color: white;
-            border: none;
-            padding: 0.75rem 1.5rem;
-            border-radius: 8px;
-            font-weight: 700;
-            font-size: 0.9rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(26, 115, 232, 0.3);
-            line-height: 1.4;
-        }
-
-        button:hover {
-            background-color: var(--primary-hover);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(26, 115, 232, 0.4);
-        }
-
-        .results-section {
-            text-align: center;
-            background: linear-gradient(145deg, #ffffff, #f6f7f9);
-            padding: 2rem;
-            border-radius: 16px;
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
-            margin-top: 2rem;
-            display: none;
-        }
-
-        .datetime-display {
-            text-align: center;
-            margin-bottom: 1.5rem;
-            font-size: 0.9rem;
-            color: #666;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 1rem;
-            background: #ffffff;
-            border-radius: 8px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-        }
-
-        @media (max-width: 768px) {
-            body {
-                padding: 0.5rem;
-            }
-
-            .container {
-                padding: 1rem;
-            }
-
-            .header {
-                flex-direction: column;
-                text-align: center;
-                padding: 0.75rem;
-            }
-
-            .banner-image {
-                height: 60px;
-                margin: 0 auto;
-            }
-
-            .jmpt-content {
-                flex-direction: column;
-                text-align: center;
-                gap: 0.5rem;
-            }
-
-            .jmpt-updated {
-                text-align: center;
-            }
-
-            .converter-grid {
-                grid-template-columns: 1fr;
-                gap: 0.5rem;
-            }
-
-            .converter-arrow {
-                transform: rotate(90deg);
-                margin: 0.5rem 0;
-            }
-
-            .input-grid {
-                grid-template-columns: 1fr;
-                gap: 1rem;
-            }
-
-            .button-group {
-                flex-direction: column;
-            }
-
-            button {
-                width: 100%;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .container {
-                padding: 0.75rem;
-            }
-
-            h1 {
-                font-size: 1.25rem;
-            }
-
-            .banner-image {
-                height: 50px;
-            }
-
-            .start-gb,
-            .end-gb,
-            .data-shared {
-                width: 60px !important;
-                font-size: 0.8rem;
-            }
-
-            .data-cell {
-                font-size: 0.8rem;
-            }
-
-            .data-range {
-                font-size: 0.75rem;
-            }
-        }
+    }
+    
     </style>
 </head>
 <body>
+    <audio id="bgMusic" loop>
+        <source src="background-music.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+
+    <!-- Minimal audio controls with SVG icons -->
+    <div class="audio-controls">
+        <button class="audio-button" onclick="toggleMusic()" aria-label="Toggle music">
+            <svg id="playIcon" class="audio-icon" viewBox="0 0 24 24" fill="currentColor">
+                <path id="playPath" d="M8 5v14l11-7z"/>
+            </svg>
+        </button>
+    </div>
+
     <div class="container">
         <div class="header">
-            <img src="honeygain.jpeg" alt="Honeygain Banner" class="banner-image">
+            <img src="honeygain.jpg" alt="Honeygain Banner" class="banner-image">
             <div class="header-text">
-                <h1>Profit Sharing Calculator</h1>
+                <h1>Honeygain Profit Sharing Calculator</h1>
                 <div class="subtitle">
                     Coded with <span class="heart">❤️</span> by Alvin | All Rights Reserved
                 </div>
             </div>
         </div>
 
-        <div class="info-section">
-            <div class="tagline">Turn Your Unused Internet into Sweet Cash with Honeygain! 🍯💸</div>
-            <div class="conversion-info">
-                <div class="conversion-item">1000 Credits = $1</div>
-                <div class="conversion-item">1 Credit = 10MB Data</div>
-            </div>
-        </div>
-
         <div class="input-grid">
             <div class="converter-section">
-                <label>Credits to Money Converter:</label>
+                <label>Credits to Money Converter</label>
+                <div class="credits-info">
+                    <div class="credits-display">
+                        Last Credits: <span>1042.25</span>
+                    </div>
+                    <div class="credits-display">
+                        Current Credits: <span id="currentCredits">0</span>
+                    </div>
+                    <div class="credits-display">
+                        Earned Credits: <span id="earnedCredits" class="earned-credits">0</span>
+                    </div>
+                </div>
+                <div class="checkbox-container">
+                    <input type="checkbox" id="calculateFromLast" onchange="convertCredits()">
+                    <label for="calculateFromLast">Count from Last Earned</label>
+                </div>
                 <div class="converter-grid">
-                    <input type="number" id="creditsInput" placeholder="Enter Credits" class="credits-input" oninput="convertCredits()">
+                    <input type="number" id="creditsInput" placeholder="Enter current credits" class="credits-input" oninput="convertCredits()">
                     <div class="converter-arrow">💱</div>
                     <div class="conversion-results">
                         <div id="dollarResult">$0.00</div>
@@ -516,11 +601,18 @@
             </div>
             
             <div class="converter-section">
-                <label>MB to GB Converter:</label>
-                <div class="converter-grid">
-                    <input type="number" id="mbInput" placeholder="Enter MB" class="mb-input" oninput="convertMbToGb()">
-                    <div class="converter-arrow">🌐</div>
-                    <input type="number" id="gbInput" placeholder="Enter GB" class="gb-input" oninput="convertGbToMb()">
+                <label>Quick Links</label>
+                <div class="nav-buttons">
+                    <a href="https://www.coingecko.com/en/coins/jumptoken" target="_blank" class="nav-button">
+                        <div class="nav-button-icon">📈</div>
+                        <div class="nav-button-label">Current JMPT Price</div>
+                        <div class="nav-button-subtitle">Check on CoinGecko</div>
+                    </a>
+                    <a href="https://www.xe.com/currencyconverter/convert/?Amount=1&From=USD&To=INR" target="_blank" class="nav-button">
+                        <div class="nav-button-icon">💱</div>
+                        <div class="nav-button-label">USD to INR Rate</div>
+                        <div class="nav-button-subtitle">Check on XE.com</div>
+                    </a>
                 </div>
             </div>
         </div>
@@ -536,8 +628,8 @@
                     <tr>
                         <th>S.No</th>
                         <th>Name</th>
-                        <th>Start GB</th>
-                        <th>End GB</th>
+                        <th>Start</th>
+                        <th>End</th>
                         <th>Data Shared (GB)</th>
                     </tr>
                 </thead>
@@ -592,13 +684,72 @@
             'Aditya | Samsung SM-M127G'
         ];
 
-        // Converter Functions
+        const bgMusic = document.getElementById('bgMusic');
+        const playIcon = document.getElementById('playIcon');
+        const playPath = document.getElementById('playPath');
+        let audioContext = null;
+        let gainNode = null;
+        let source = null;
+
+        // Initialize audio context
+        function initAudioContext() {
+            if (!audioContext) {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                gainNode = audioContext.createGain();
+                source = audioContext.createMediaElementSource(bgMusic);
+                source.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+            }
+        }
+
+        async function fadeIn(duration = 1000) {
+            gainNode.gain.setValueAtTime(0, audioContext.currentTime);
+            gainNode.gain.linearRampToValueAtTime(1, audioContext.currentTime + duration / 1000);
+        }
+
+        async function fadeOut(duration = 1000) {
+            gainNode.gain.setValueAtTime(gainNode.gain.value, audioContext.currentTime);
+            gainNode.gain.linearRampToValueAtTime(0, audioContext.currentTime + duration / 1000);
+            return new Promise(resolve => setTimeout(resolve, duration));
+        }
+
+        async function toggleMusic() {
+            initAudioContext();
+            
+            if (bgMusic.paused) {
+                await audioContext.resume();
+                playPath.setAttribute('d', 'M6 19h4V5H6v14zm8-14v14h4V5h-4z'); // pause icon
+                bgMusic.play();
+                fadeIn();
+            } else {
+                playPath.setAttribute('d', 'M8 5v14l11-7z'); // play icon
+                await fadeOut();
+                bgMusic.pause();
+            }
+        }
+
+        // Set initial volume
+        bgMusic.volume = 0.5;
+
+        const LAST_CREDITS = 1042.25;
+
         function convertCredits() {
             const creditsInput = document.getElementById('creditsInput');
             const dollarResult = document.getElementById('dollarResult');
+            const currentCreditsDisplay = document.getElementById('currentCredits');
+            const earnedCreditsDisplay = document.getElementById('earnedCredits');
+            const calculateFromLast = document.getElementById('calculateFromLast').checked;
             
-            const credits = parseFloat(creditsInput.value) || 0;
-            const dollars = (credits / 1000).toFixed(2);
+            let currentCredits = parseFloat(creditsInput.value) || 0;
+            let earnedCredits = Math.max(0, currentCredits - LAST_CREDITS);
+            
+            // Update displays
+            currentCreditsDisplay.textContent = currentCredits.toFixed(2);
+            earnedCreditsDisplay.textContent = earnedCredits.toFixed(2);
+            
+            // Calculate dollars based on checkbox selection
+            const creditsToConvert = calculateFromLast ? earnedCredits : currentCredits;
+            const dollars = (creditsToConvert / 1000).toFixed(2);
             dollarResult.textContent = `$${dollars}`;
         }
 
