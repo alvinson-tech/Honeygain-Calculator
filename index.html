@@ -593,7 +593,7 @@
                 </div>
                 <div class="converter-grid">
                     <input type="number" id="creditsInput" placeholder="Enter current credits" class="credits-input" oninput="convertCredits()">
-                    <div class="converter-arrow">🌐</div>
+                    <div class="converter-arrow">💱</div>
                     <div class="conversion-results">
                         <div id="dollarResult">$0.00</div>
                     </div>
@@ -664,7 +664,7 @@
             <div class="button-group" style="justify-content: center; margin-top: 2rem;">
                 <button type="button" onclick="saveAsImage()" style="width: auto; min-width: 200px; display: flex; flex-direction: column; align-items: center; gap: 0.25rem;">
                     <span id="totalEarnings">We Earned: ₹0/-</span>
-                    <span>Happy Honeygain</span>
+                    <span>Happy Honeygain 🐝</span>
                 </button>
             </div>
         </div>
@@ -830,17 +830,70 @@
         function saveAsImage() {
             const element = document.querySelector('.results-section');
             
-            const originalBackground = element.style.background;
-            element.style.background = '#ffffff';
+            // Store original styles
+            const originalStyles = {
+                background: element.style.background,
+                backgroundColor: element.style.backgroundColor
+            };
 
+            // Store all child elements that need style preservation
+            const elementsToPreserve = element.querySelectorAll('.datetime-display, table, th, td, .button-group, button');
+            const originalChildStyles = new Map();
+
+            elementsToPreserve.forEach(el => {
+                originalChildStyles.set(el, {
+                    background: el.style.background,
+                    backgroundColor: el.style.backgroundColor,
+                    borderColor: el.style.borderColor
+                });
+            });
+
+            // Apply temporary styles for capture
+            element.style.background = 'linear-gradient(145deg, #1E293B, #0F172A)';
+            element.style.backgroundColor = '#1E293B';
+
+            // Ensure child elements maintain their styles
+            elementsToPreserve.forEach(el => {
+                if (el.classList.contains('datetime-display')) {
+                    el.style.background = 'rgba(255, 255, 255, 0.03)';
+                    el.style.borderColor = '#334155';
+                }
+                if (el.tagName === 'TABLE') {
+                    el.style.background = 'linear-gradient(145deg, #1E293B, #0F172A)';
+                    el.style.borderColor = '#334155';
+                }
+                if (el.tagName === 'TH') {
+                    el.style.backgroundColor = 'rgba(255, 255, 255, 0.03)';
+                    el.style.borderColor = '#334155';
+                }
+                if (el.tagName === 'TD') {
+                    el.style.borderColor = '#334155';
+                }
+                if (el.tagName === 'BUTTON') {
+                    el.style.background = 'linear-gradient(135deg, #22c1da, #06a1bc)';
+                }
+            });
+
+            // Capture the image
             html2canvas(element, {
-                backgroundColor: '#ffffff',
+                backgroundColor: null,
                 scale: 2,
                 logging: false,
                 useCORS: true
             }).then(canvas => {
-                element.style.background = originalBackground;
-                
+                // Restore original styles
+                element.style.background = originalStyles.background;
+                element.style.backgroundColor = originalStyles.backgroundColor;
+
+                // Restore child elements' original styles
+                elementsToPreserve.forEach(el => {
+                    const originalStyle = originalChildStyles.get(el);
+                    el.style.background = originalStyle.background;
+                    el.style.backgroundColor = originalStyle.backgroundColor;
+                    el.style.borderColor = originalStyle.borderColor;
+                });
+
+                // Create and trigger download
                 const link = document.createElement('a');
                 link.download = `HoneygainResults_${new Date().toLocaleDateString('en-US').replace(/\//g, '-')}.png`;
                 link.href = canvas.toDataURL('image/png');
