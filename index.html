@@ -221,8 +221,20 @@
     }
     
     .name-input {
-        width: 100% !important;
+        width: 300px !important;
     }
+
+    .credits-input {
+            width: 250px !important; /* Much shorter credits input */
+            text-align: center;
+        }
+
+        .last-credits-info {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            margin-top: 2px;
+            text-align: center;
+        }
     
     input:focus {
         outline: none;
@@ -628,8 +640,7 @@
                     <tr>
                         <th>S.No</th>
                         <th>Name</th>
-                        <th>Start</th>
-                        <th>End</th>
+                        <th>Credits Earned</th>
                         <th>Data Shared (GB)</th>
                     </tr>
                 </thead>
@@ -654,7 +665,7 @@
                     <tr>
                         <th>S.No</th>
                         <th>Name</th>
-                        <th>Data Shared (GB)</th>
+                        <th>Credits Earned</th>
                         <th>Percentage Contribution</th>
                         <th>Amount Earned (₹)</th>
                     </tr>
@@ -671,17 +682,17 @@
     </div>
 
     <script>
-        const defaultNames = [
-            'Alvin | Xiaomi M2004J19PI',
-            'Alvin | Win 10 Lenovo',
-            'Ananya | Xiaomi 22120RN86I',
-            'Ananya | Win 10 Dell',
-            'Ganesh | Motorola G71',
-            'Amulya | Oneplus CPH2423',
-            'Vallabh | Oneplus CPH2381',
-            'Abhishek | Realme RMX3660',
-            'Mohit | Realme RMX3868',
-            'Aditya | Samsung SM-M127G'
+        const contributorData = [
+            { name: 'Alvin | Xiaomi M2004J19PI', lastCredits: 0.0 },
+            { name: 'Alvin | Win 10 Lenovo', lastCredits: 0.0 },
+            { name: 'Ananya | Xiaomi 22120RN86I', lastCredits: 0.0 },
+            { name: 'Ananya | Win 10 Dell', lastCredits: 0.0 },
+            { name: 'Ganesh | Motorola G71', lastCredits: 0.0 },
+            { name: 'Amulya | Oneplus CPH2423', lastCredits: 0.0 },
+            { name: 'Vallabh | Oneplus CPH2381', lastCredits: 0.0 },
+            { name: 'Abhishek | Realme RMX3660', lastCredits: 0.0 },
+            { name: 'Mohit | Realme RMX3868', lastCredits: 0.0 },
+            { name: 'Aditya | Samsung SM-M127G', lastCredits: 0.0 }
         ];
 
         const bgMusic = document.getElementById('bgMusic');
@@ -769,14 +780,18 @@
 
         function calculateDataShared(input) {
             const row = input.closest('tr');
-            const startGB = parseFloat(row.querySelector('.start-gb').value) || 0;
-            const endGB = parseFloat(row.querySelector('.end-gb').value) || 0;
-            const dataShared = endGB - startGB;
+            const creditsInput = row.querySelector('.credits-input');
+            const dataSharedInput = row.querySelector('.data-shared');
             
-            row.querySelector('.data-shared').value = dataShared > 0 ? dataShared.toFixed(2) : '0.00';
+            const credits = parseFloat(creditsInput.value) || 0;
+            // 1 credit = 10MB, convert to GB
+            const dataSharedGB = (credits * 10 / 1024).toFixed(2);
+            
+            dataSharedInput.value = dataSharedGB;
         }
 
         function calculateShares() {
+            // Previous calculateShares function with added last credits display in results
             const rows = document.querySelectorAll('#dataTable tbody tr');
             const totalAmount = parseFloat(document.getElementById('totalAmount').value) || 0;
             const resultsTable = document.getElementById('resultsTable').querySelector('tbody');
@@ -790,12 +805,15 @@
 
             rows.forEach((row, index) => {
                 const name = row.querySelector('td:nth-child(2) input').value;
-                const startGB = parseFloat(row.querySelector('.start-gb').value) || 0;
-                const endGB = parseFloat(row.querySelector('.end-gb').value) || 0;
+                const lastCreditsElem = row.querySelector('.last-credits-info');
+                const lastCredits = lastCreditsElem ? 
+                    parseFloat(lastCreditsElem.textContent.replace('Last Earned: ', '').replace(' Credits', '')) : 0;
+                
+                const credits = parseFloat(row.querySelector('.credits-input').value) || 0;
                 const dataShared = parseFloat(row.querySelector('.data-shared').value) || 0;
                 
-                if (name && dataShared > 0) {
-                    contributors.push({ name, startGB, endGB, dataShared });
+                if (name && credits > 0) {
+                    contributors.push({ name, credits, dataShared, lastCredits });
                     totalData += dataShared;
                 }
             });
@@ -813,11 +831,11 @@
                 resultsTable.insertAdjacentHTML('beforeend', `
                     <tr>
                         <td>${index + 1}</td>
-                        <td>${contributor.name}</td>
-                        <td class="data-cell">
-                            <div>${contributor.dataShared.toFixed(2)}</div>
-                            <div class="data-range">(${contributor.startGB.toFixed(2)} → ${contributor.endGB.toFixed(2)})</div>
+                        <td>
+                            ${contributor.name}
+                            <div class="last-credits-info">Last Earned: ${contributor.lastCredits.toFixed(2)} Credits</div>
                         </td>
+                        <td>${contributor.credits.toFixed(2)}</td>
                         <td>${percentage}%</td>
                         <td>₹${earned}</td>
                     </tr>
@@ -920,17 +938,21 @@
         // Initialize the page
         window.onload = function() {
             const tbody = document.getElementById('dataTable').querySelector('tbody');
-            for (let i = 0; i < 10; i++) {
+            tbody.innerHTML = ''; // Clear existing rows
+            
+            contributorData.forEach((contributor, index) => {
                 tbody.insertAdjacentHTML('beforeend', `
                     <tr>
-                        <td>${i + 1}</td>
-                        <td><input type="text" class="name-input" placeholder="Enter name" value="${defaultNames[i]}"></td>
-                        <td><input type="number" placeholder="GB" class="start-gb" oninput="calculateDataShared(this)" step="0.01" min="0"></td>
-                        <td><input type="number" placeholder="GB" class="end-gb" oninput="calculateDataShared(this)" step="0.01" min="0"></td>
+                        <td>${index + 1}</td>
+                        <td>
+                            <input type="text" class="name-input" placeholder="Enter name" value="${contributor.name}">
+                            <div class="last-credits-info">Last Earned: ${contributor.lastCredits.toFixed(2)} Credits</div>
+                        </td>
+                        <td><input type="number" placeholder="Credits" class="credits-input" oninput="calculateDataShared(this)" step="0.01" min="0"></td>
                         <td><input type="number" placeholder="Data" class="data-shared" readonly step="0.01"></td>
                     </tr>
                 `);
-            }
+            });
             
             updateDateTime();
             setInterval(updateDateTime, 1000);
