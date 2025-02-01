@@ -150,8 +150,9 @@
         }
 
         .earned-credits {
-        color: var(--success-color);
-        font-weight: 700;
+            background-color: rgba(52, 211, 153, 0.1) !important;
+            color: var(--success-color) !important;
+            font-weight: 700;
         }
 
         .input-grid {
@@ -708,7 +709,8 @@
                     <tr>
                         <th>S.No</th>
                         <th>Name</th>
-                        <th>Credits Earned</th>
+                        <th>Credits</th>
+                        <th>Earned</th>
                         <th>Data Shared (GB)</th>
                     </tr>
                 </thead>
@@ -733,7 +735,7 @@
                     <tr>
                         <th>S.No</th>
                         <th>Name</th>
-                        <th>Credits Earned</th>
+                        <th>Earned</th>
                         <th>Percentage Contribution</th>
                         <th>Amount Earned (₹)</th>
                     </tr>
@@ -846,6 +848,21 @@
             mbInput.value = Math.round(gb * 1024);
         }
 
+        function calculateEarnedCredits(input) {
+            const row = input.closest('tr');
+            const lastCredits = parseFloat(row.querySelector('.last-credits-info').textContent.replace('Last Earned: ', '').replace(' Credits', '')) || 0;
+            const currentCredits = parseFloat(input.value) || 0;
+            const earnedCreditsInput = row.querySelector('.earned-credits');
+            const dataSharedInput = row.querySelector('.data-shared');
+            
+            const earnedCredits = Math.max(0, currentCredits - lastCredits);
+            earnedCreditsInput.value = earnedCredits.toFixed(2);
+            
+            // Calculate data shared based on earned credits
+            const dataSharedGB = (earnedCredits * 10 / 1024).toFixed(2);
+            dataSharedInput.value = dataSharedGB;
+        }
+
         function calculateDataShared(input) {
             const row = input.closest('tr');
             const creditsInput = row.querySelector('.credits-input');
@@ -859,7 +876,6 @@
         }
 
         function calculateShares() {
-            // Previous calculateShares function with added last credits display in results
             const rows = document.querySelectorAll('#dataTable tbody tr');
             const totalAmount = parseFloat(document.getElementById('totalAmount').value) || 0;
             const resultsTable = document.getElementById('resultsTable').querySelector('tbody');
@@ -873,15 +889,12 @@
 
             rows.forEach((row, index) => {
                 const name = row.querySelector('td:nth-child(2) input').value;
-                const lastCreditsElem = row.querySelector('.last-credits-info');
-                const lastCredits = lastCreditsElem ? 
-                    parseFloat(lastCreditsElem.textContent.replace('Last Earned: ', '').replace(' Credits', '')) : 0;
-                
-                const credits = parseFloat(row.querySelector('.credits-input').value) || 0;
+                const lastCredits = parseFloat(row.querySelector('.last-credits-info').textContent.replace('Last Earned: ', '').replace(' Credits', '')) || 0;
+                const earnedCredits = parseFloat(row.querySelector('.earned-credits').value) || 0;
                 const dataShared = parseFloat(row.querySelector('.data-shared').value) || 0;
                 
-                if (name && credits > 0) {
-                    contributors.push({ name, credits, dataShared, lastCredits });
+                if (name && earnedCredits > 0) {
+                    contributors.push({ name, earnedCredits, dataShared, lastCredits });
                     totalData += dataShared;
                 }
             });
@@ -903,7 +916,7 @@
                             ${contributor.name}
                             <div class="last-credits-info">Last Earned: ${contributor.lastCredits.toFixed(2)} Credits</div>
                         </td>
-                        <td>${contributor.credits.toFixed(2)}</td>
+                        <td>${contributor.earnedCredits.toFixed(2)}</td>
                         <td>${percentage}%</td>
                         <td>₹${earned}</td>
                     </tr>
@@ -1016,7 +1029,8 @@
                             <input type="text" class="name-input" placeholder="Enter name" value="${contributor.name}">
                             <div class="last-credits-info">Last Earned: ${contributor.lastCredits.toFixed(2)} Credits</div>
                         </td>
-                        <td><input type="number" placeholder="Credits" class="credits-input" oninput="calculateDataShared(this)" step="0.01" min="0"></td>
+                        <td><input type="number" placeholder="Current Credits" class="credits-input" oninput="calculateEarnedCredits(this)" step="0.01" min="0"></td>
+                        <td><input type="number" placeholder="Earned" class="earned-credits" readonly step="0.01"></td>
                         <td><input type="number" placeholder="Data" class="data-shared" readonly step="0.01"></td>
                     </tr>
                 `);
