@@ -420,6 +420,127 @@
             font-weight: bold;
             color: var(--text-color);
         }
+
+        /* Mobile-specific styles */
+@media only screen and (max-width: 768px) {
+    body {
+        padding: 1rem;
+    }
+
+    .container {
+        padding: 1rem;
+        border-radius: 16px;
+    }
+
+    .header {
+        flex-direction: column;
+        text-align: center;
+        gap: 1rem;
+        padding: 1rem;
+    }
+
+    .banner-image {
+        height: 100px;
+        margin-bottom: 1rem;
+    }
+
+    .header-text {
+        min-width: unset;
+    }
+
+    h1 {
+        font-size: 1.75rem;
+    }
+
+    .subtitle {
+        font-size: 0.8rem;
+    }
+
+    .input-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .info-container {
+        padding: 1rem !important;
+    }
+
+    .amount-container input {
+        width: 100%;
+    }
+
+    .form-group {
+        padding: 1rem;
+    }
+
+    .name-input {
+        width: 100% !important;
+    }
+
+    .credits-input {
+        width: 80% !important;
+    }
+
+    .earned-credits {
+        width: 80% !important;
+    }
+
+    table {
+        font-size: 0.8rem;
+    }
+
+    th, td {
+        padding: 0.5rem;
+    }
+
+    .button-group {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    button {
+        width: 100%;
+        padding: 0.75rem;
+    }
+
+    .results-section {
+        padding: 1rem;
+    }
+
+    .datetime-display {
+        flex-direction: column;
+        gap: 0.5rem;
+        padding: 0.75rem;
+    }
+
+    .datetime-label {
+        font-size: 0.8rem;
+    }
+
+    #dataTable th:nth-child(1),
+    #dataTable td:nth-child(1),
+    #dataTable th:nth-child(2),
+    #dataTable td:nth-child(2),
+    #dataTable th:nth-child(3),
+    #dataTable td:nth-child(3),
+    #dataTable th:nth-child(4),
+    #dataTable td:nth-child(4) {
+        width: auto;
+    }
+
+    #resultsTable th:nth-child(1),
+    #resultsTable td:nth-child(1),
+    #resultsTable th:nth-child(2),
+    #resultsTable td:nth-child(2),
+    #resultsTable th:nth-child(3),
+    #resultsTable td:nth-child(3),
+    #resultsTable th:nth-child(4),
+    #resultsTable td:nth-child(4),
+    #resultsTable th:nth-child(5),
+    #resultsTable td:nth-child(5) {
+        width: auto;
+    }
+}
     </style>
 </head>
 <body>
