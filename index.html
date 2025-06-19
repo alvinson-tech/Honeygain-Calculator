@@ -1,845 +1,889 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Honeygain Calculator</title>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    <style> 
-        :root {
-            --primary-color: #10d2ef;
-            --primary-hover: #06b6d4;
-            --background-color: #0f172a;
-            --card-background: #1e293b;
-            --border-color: #334155;
-            --text-color: #f1f5f9;
-            --text-muted: #94a3b8;
-            --shadow: rgba(0, 0, 0, 0.25);
-            --success-color: #34d399;
-            --accent-gradient: linear-gradient(135deg, #22c1da, #06a1bc);
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Honeygain Calculator</title>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: linear-gradient(135deg, #1a1a1a 0%, #000000 100%);
+      color: #ffffff;
+      font-family: 'JetBrains Mono', monospace;
+      min-height: 100vh;
+      padding: 20px 20px 0 20px;
+      position: relative;
+      overflow-x: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Square matrix background */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: 
+        linear-gradient(rgba(255, 193, 7, 0.1) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 193, 7, 0.1) 1px, transparent 1px);
+      background-size: 30px 30px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Floating honeybees */
+    .honeybee {
+      position: fixed;
+      font-size: 20px;
+      pointer-events: none;
+      z-index: 1;
+      user-select: none;
+      filter: drop-shadow(0 0 8px rgba(255, 193, 7, 0.6));
+    }
+
+    .honeybee:nth-child(1) {
+      top: 15%; left: 10%;
+      animation: float1 8s ease-in-out infinite;
+    }
+    .honeybee:nth-child(2) {
+      top: 25%; right: 15%;
+      animation: float2 12s ease-in-out infinite;
+    }
+    .honeybee:nth-child(3) {
+      bottom: 30%; left: 20%;
+      animation: float3 10s ease-in-out infinite;
+    }
+    .honeybee:nth-child(4) {
+      bottom: 20%; right: 18%;
+      animation: float1 14s ease-in-out infinite reverse;
+    }
+    .honeybee:nth-child(5) {
+      top: 60%; left: 8%;
+      animation: float2 9s ease-in-out infinite;
+    }
+    .honeybee:nth-child(6) {
+      top: 70%; right: 25%;
+      animation: float3 13s ease-in-out infinite;
+    }
+
+    @keyframes float1 {
+      0%, 100% { transform: translateY(0px) translateX(0px) rotate(0deg); opacity: 0.6; }
+      25% { transform: translateY(-20px) translateX(15px) rotate(5deg); opacity: 0.9; }
+      50% { transform: translateY(-35px) translateX(-10px) rotate(-3deg); opacity: 1; }
+      75% { transform: translateY(-15px) translateX(20px) rotate(2deg); opacity: 0.8; }
+    }
+
+    @keyframes float2 {
+      0%, 100% { transform: translateY(0px) translateX(0px) rotate(0deg); opacity: 0.5; }
+      33% { transform: translateY(-25px) translateX(-15px) rotate(-8deg); opacity: 0.9; }
+      66% { transform: translateY(-40px) translateX(10px) rotate(6deg); opacity: 0.7; }
+    }
+
+    @keyframes float3 {
+      0%, 100% { transform: translateY(0px) translateX(0px) scale(1); opacity: 0.6; }
+      50% { transform: translateY(-30px) translateX(18px) scale(1.1); opacity: 1; }
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 2;
+      flex: 1;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .header h1 {
+      font-size: 3rem;
+      font-weight: 700;
+      color: #ffc107;
+      text-shadow: 0 0 30px rgba(255, 193, 7, 0.5);
+      margin-bottom: 12px;
+      letter-spacing: -0.02em;
+    }
+
+    .header p {
+      font-size: 1.2rem;
+      color: rgba(255, 255, 255, 0.8);
+      font-weight: 400;
+    }
+
+    .main-card {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 193, 7, 0.2);
+      border-radius: 20px;
+      padding: 40px;
+      box-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      position: relative;
+      margin-bottom: 40px;
+    }
+
+    .main-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(135deg, rgba(255, 193, 7, 0.1) 0%, transparent 50%);
+      border-radius: 20px;
+      pointer-events: none;
+    }
+
+    .section {
+      margin-bottom: 40px;
+      position: relative;
+    }
+
+    .section:last-child {
+      margin-bottom: 0;
+    }
+
+    .section-title {
+      font-size: 1.4rem;
+      font-weight: 600;
+      color: #ffc107;
+      margin-bottom: 20px;
+    }
+
+    .input-group {
+      margin-bottom: 20px;
+    }
+
+    .input-label {
+      display: block;
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: rgba(255, 255, 255, 0.9);
+      margin-bottom: 8px;
+    }
+
+    .input-field {
+      width: 100%;
+      padding: 12px 16px;
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(255, 193, 7, 0.3);
+      border-radius: 8px;
+      color: #ffffff;
+      font-size: 1rem;
+      font-family: 'JetBrains Mono', monospace;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
+    }
+
+    .input-field:focus {
+      outline: none;
+      border-color: #ffc107;
+      box-shadow: 0 0 0 3px rgba(255, 193, 7, 0.2);
+      background: rgba(0, 0, 0, 0.4);
+    }
+
+    /* Table styles */
+    .table-container {
+      overflow-x: auto;
+      border-radius: 12px;
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px solid rgba(255, 193, 7, 0.2);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    th, td {
+      padding: 12px 16px;
+      text-align: left;
+      border-bottom: 1px solid rgba(255, 193, 7, 0.1);
+    }
+
+    th {
+      background: rgba(255, 193, 7, 0.1);
+      color: #ffc107;
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+
+    td {
+      background: rgba(0, 0, 0, 0.1);
+      color: #ffffff;
+    }
+
+    tr:hover td {
+      background: rgba(255, 193, 7, 0.05);
+    }
+
+    .table-input {
+      background: transparent;
+      border: none;
+      color: #ffffff;
+      padding: 4px 8px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.9rem;
+      width: 100%;
+    }
+
+    .table-input:focus {
+      outline: 1px solid rgba(255, 193, 7, 0.5);
+      border-radius: 4px;
+      background: rgba(255, 193, 7, 0.1);
+    }
+
+    .btn {
+      padding: 12px 24px;
+      background: linear-gradient(135deg, #ffc107 0%, #ff8f00 100%);
+      color: #000000;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      font-family: 'JetBrains Mono', monospace;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(255, 193, 7, 0.3);
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(255, 193, 7, 0.4);
+    }
+
+    .btn-add {
+      background: rgba(255, 193, 7, 0.2);
+      color: #ffc107;
+      border: 1px solid rgba(255, 193, 7, 0.4);
+      margin-top: 15px;
+    }
+
+    .btn-add:hover {
+      background: rgba(255, 193, 7, 0.3);
+    }
+
+    .btn-remove {
+      background: rgba(220, 53, 69, 0.2);
+      color: #dc3545;
+      border: 1px solid rgba(220, 53, 69, 0.4);
+      padding: 6px 12px;
+      font-size: 0.8rem;
+    }
+
+    .btn-remove:hover {
+      background: rgba(220, 53, 69, 0.3);
+    }
+
+    .btn-calculate {
+      width: 100%;
+      font-size: 1.1rem;
+      padding: 16px;
+      margin-top: 20px;
+    }
+
+    .results {
+      margin-top: 30px;
+    }
+
+    .result-highlight {
+      background: rgba(255, 193, 7, 0.15) !important;
+      color: #ffc107 !important;
+      font-weight: 600;
+    }
+
+    /* Reference Section Styles */
+    .reference-section {
+      margin-top: 40px;
+      padding: 0 20px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .reference-card {
+      background: rgba(255, 255, 255, 0.03);
+      backdrop-filter: blur(15px);
+      border: 1px solid rgba(255, 193, 7, 0.15);
+      border-radius: 16px;
+      padding: 30px;
+      text-align: center;
+      position: relative;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .reference-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(135deg, rgba(255, 193, 7, 0.05) 0%, transparent 50%);
+      border-radius: 16px;
+      pointer-events: none;
+    }
+
+    .reference-title {
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: #ffc107;
+      margin-bottom: 25px;
+      text-shadow: 0 0 15px rgba(255, 193, 7, 0.3);
+    }
+
+    .reference-links {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .reference-link {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 16px 24px;
+      background: rgba(255, 193, 7, 0.08);
+      border: 1px solid rgba(255, 193, 7, 0.2);
+      border-radius: 12px;
+      text-decoration: none;
+      color: #ffffff;
+      font-family: 'JetBrains Mono', monospace;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .reference-link::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 193, 7, 0.1), transparent);
+      transition: left 0.5s ease;
+    }
+
+    .reference-link:hover {
+      transform: translateY(-2px);
+      border-color: rgba(255, 193, 7, 0.4);
+      background: rgba(255, 193, 7, 0.12);
+      box-shadow: 0 8px 25px rgba(255, 193, 7, 0.15);
+    }
+
+    .reference-link:hover::before {
+      left: 100%;
+    }
+
+    .reference-icon {
+      font-size: 1.5rem;
+      filter: drop-shadow(0 0 8px rgba(255, 193, 7, 0.4));
+    }
+
+    .reference-content {
+      text-align: left;
+    }
+
+    .reference-label {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #ffc107;
+      margin-bottom: 2px;
+    }
+
+    .reference-desc {
+      font-size: 0.8rem;
+      color: rgba(255, 255, 255, 0.7);
+      font-weight: 400;
+    }
+
+    .footer {
+        margin-top: 40px;
+        padding: 30px 20px;
+        border-top: 1px solid rgba(255, 193, 7, 0.2);
+        text-align: center;
+        background: rgba(0, 0, 0, 0.1);
+        backdrop-filter: blur(10px);
+        width: 100%;
+        position: relative;
+        z-index: 2;
+        border-radius: 20px 20px 0 0;
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: "Space Mono", monospace;
-        }
-
-        body {
-            margin: 0;
-            padding: 2rem;
-            background-color: var(--background-color);
-            color: var(--text-color);
-            line-height: 1.6;
-            background-image: radial-gradient(
-                    circle at 1px 1px,
-                    var(--border-color) 1px,
-                    transparent 0
-                );
-            background-size: 30px 30px;
-        }
-
-        .container {
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 2rem;
-            background-color: var(--card-background);
-            border-radius: 24px;
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
-            border: 1px solid var(--border-color);
-        }
-
-        .header {
-            text-align: left;
-            margin-bottom: 2.5rem;
-            padding: 1.5rem;
-            background: linear-gradient(145deg, #1e293b, #0f172a);
-            border-radius: 16px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-            display: flex;
-            align-items: center;
-            gap: 1.5rem;
-            flex-wrap: wrap;
-            border: 1px solid var(--border-color);
-        }
-
-        .banner-image {
-            height: 150px;
-            width: auto;
-            border-radius: 12px;
-            object-fit: contain;
-            flex-shrink: 0;
-            filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.3));
-        }
-
-        .header-text {
-            flex: 1;
-            text-align: center;
-            min-width: 200px;
-        }
-
-        h1 {
-            color: var(--text-color);
-            font-size: 2.25rem;
-            margin-bottom: 0.5rem;
-            font-weight: 700;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-            background: var(--accent-gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .subtitle {
-            color: var(--text-muted);
-            font-size: 0.9rem;
-            font-weight: 400;
-        }
-
-        .input-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 2rem;
-            margin-bottom: 2rem;
-            justify-content: center;
-            max-width: 100%;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        .info-container {
-            background: linear-gradient(145deg, #1e293b, #0f172a);
-            padding: 1.5rem !important;
-            border-radius: 16px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-            border: 1px solid var(--border-color);
-            width: 100%;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .section-header {
-            background: var(--accent-gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            font-size: 1.1rem;
-        /* Increased font size */
-            margin-bottom: 0.75rem;
-            font-weight: 700;
-            text-align: left;
-        }
-
-        .simple-links {
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-            text-align: left;
-        }
-
-        .simple-link {
-            text-decoration: none;
-            color: var(--text-color);
-            display: flex;
-            flex-direction: column;
-            gap: 0.25rem;
-            font-size: 0.9rem;
-        /* Increased font size */;
-        }
-
-        .link-subtitle {
-            color: #22d3ee;
-            font-size: 0.8rem;
-        /* Increased font size */
-            margin-left: 1.5rem;
-            transition: color 0.2s ease;
-        }
-
-        .link-subtitle:hover {
-            color: #06b6d4;
-        }
-
-        .amount-container {
-            background: linear-gradient(145deg, #1e293b, #0f172a);
-            padding: 1.5rem !important;
-            border-radius: 16px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-            border: 1px solid var(--border-color);
-            width: 100%;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-        }
-
-        .amount-container label {
-            color: var(--primary-color);
-            font-size: 1.1rem;
-        /* Increased font size */
-            margin-bottom: 0.5rem;
-            font-weight: 700;
-            display: block;
-        }
-
-        .amount-subtitle {
-            color: var(--text-muted);
-            font-size: 0.9rem;
-        /* Increased font size */
-            margin-bottom: 0.7rem;
-        }
-
-        .amount-container input {
-            width: 70%;
-        /* Reduced width of input */
-            padding: 0.75rem;
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            font-size: 0.9rem;
-        /* Increased font size */
-            background: rgba(255, 255, 255, 0.03);
-            color: var(--text-color);
-            margin-top: 1rem;
-        }
-
-        .converter-section {
-            background: linear-gradient(145deg, #1e293b, #0f172a);
-            padding: 1.5rem;
-            border-radius: 16px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-            text-align: center;
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-            border: 1px solid var(--border-color);
-        }
-
-        .form-group {
-            margin-bottom: 2rem;
-            background: linear-gradient(145deg, #1e293b, #0f172a);
-            padding: 1.5rem;
-            border-radius: 16px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-            border: 1px solid var(--border-color);
-        }
-
-        label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 600;
-            color: var(--text-color);
-        }
-
-        input[type="number"],
-                input[type="text"] {
-            width: 100%;
-            padding: 0.75rem;
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            font-size: 0.9rem;
-            transition: all 0.3s ease;
-            background: rgba(255, 255, 255, 0.03);
-            color: var(--text-color);
-        }
-
-        .name-input {
-            width: 300px !important;
-        }
-
-        .credits-input {
-            width: 100px !important;
-            text-align: center;
-        }
-
-        .last-credits-info {
-            font-size: 0.7rem;
-            color: var(--text-muted);
-            margin-top: 2px;
-            text-align: center;
-        }
-
-        .earned-credits {
-            width: 100px !important;
-            text-align: center;
-            background-color: rgba(52, 211, 153, 0.1) !important;
-            color: var(--success-color) !important;
-            font-weight: 700;
-        }
-
-        input:focus {
-            outline: none;
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.2);
-            background: rgba(255, 255, 255, 0.05);
-        }
-
-        input:read-only {
-            background-color: rgba(0, 0, 0, 0.2);
-            cursor: not-allowed;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: separate;
-            border-spacing: 0;
-            margin: 1.5rem 0;
-            font-size: 0.9rem;
-            background: linear-gradient(145deg, #1e293b, #0f172a);
-            border-radius: 16px;
-            overflow: hidden;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-            border: 1px solid var(--border-color);
-        }
-
-                /* Input table specific styles */
-        #dataTable {
-            table-layout: fixed;
-        }
-
-        #dataTable th:nth-child(1), 
-                #dataTable td:nth-child(1) {
-            width: 2%;
-        }
-
-        #dataTable th:nth-child(2), 
-                #dataTable td:nth-child(2) {
-            width: 7.5%;
-        }
-
-        #dataTable th:nth-child(3), 
-                #dataTable td:nth-child(3),
-                #dataTable th:nth-child(4), 
-                #dataTable td:nth-child(4) {
-            width: 3.5%;
-        }
-
-                /* Results table specific styles */
-        #resultsTable {
-            table-layout: fixed;
-        }
-
-        #resultsTable th:nth-child(1),
-                #resultsTable td:nth-child(1) {
-            width: 10%;
-        /* S.No */;
-        }
-
-        #resultsTable th:nth-child(2),
-                #resultsTable td:nth-child(2) {
-            width: 40%;
-        /* Name */;
-        }
-
-        #resultsTable th:nth-child(3),
-                #resultsTable td:nth-child(3) {
-            width: 15%;
-        /* Earned Credits */;
-        }
-
-        #resultsTable th:nth-child(4),
-                #resultsTable td:nth-child(4) {
-            width: 20%;
-        /* Contribution % */;
-        }
-
-        #resultsTable th:nth-child(5),
-                #resultsTable td:nth-child(5) {
-            width: 20%;
-        /* Amount Earned */;
-        }
-
-                /* Common cell styles */
-        th, td {
-            padding: 0.75rem 0.5rem;
-            border-bottom: 1px solid var(--border-color);
-            text-align: center;
-        }
-
-        th {
-            background-color: rgba(255, 255, 255, 0.03);
-            font-weight: 700;
-            border-bottom: 2px solid var(--border-color);
-            color: var(--primary-color);
-        }
-
-        .data-cell {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .data-range {
-            font-size: 0.8rem;
-            color: var(--text-muted);
-        }
-
-        tr:hover {
-            background-color: rgba(255, 255, 255, 0.03);
-        }
-
-        .button-group {
-            display: flex;
-            gap: 1rem;
-            margin: 1.5rem 0;
-            justify-content: center;
-        }
-
-        button {
-            background: var(--accent-gradient);
-            color: white;
-            border: none;
-            padding: 0.75rem 1.5rem;
-            border-radius: 12px;
-            font-weight: 700;
-            font-size: 0.9rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(34, 211, 238, 0.2);
-            line-height: 1.4;
-        }
-
-        button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(34, 211, 238, 0.3);
-            filter: brightness(1.1);
-        }
-
-        .results-section {
-            text-align: center;
-            background: linear-gradient(145deg, #1e293b, #0f172a);
-            padding: 2rem;
-            border-radius: 16px;
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
-            margin-top: 2rem;
-            display: none;
-            border: 1px solid var(--border-color);
-        }
-
-        .datetime-display {
-            text-align: center;
-            margin-top: 1.5rem;
-            margin-bottom: 1.5rem;
-            font-size: 0.9rem;
-            color: var(--text-muted);
-            display: flex;
-            flex-direction: row;
-            align-items: center;
-            justify-content: center;
-            gap: 2rem;
-            padding: 1rem;
-            background: rgba(255, 255, 255, 0.03);
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-            border: 1px solid var(--border-color);
-        }
-
-        .datetime-label {
-            font-weight: bold;
-            color: var(--text-color);
-        }
-
-                /* Mobile-specific styles */
-        @media only screen and (max-width: 768px) {
-            body {
-                padding: 1rem;
-            }
-
-            .container {
-                padding: 1rem;
-                border-radius: 16px;
-            }
-
-            .header {
-                flex-direction: column;
-                text-align: center;
-                gap: 1rem;
-                padding: 1rem;
-            }
-
-            .banner-image {
-                height: 100px;
-                margin-bottom: 1rem;
-            }
-
-            .header-text {
-                min-width: unset;
-            }
-
-            h1 {
-                font-size: 1.75rem;
-            }
-
-            .subtitle {
-                font-size: 0.8rem;
-            }
-
-            .input-grid {
-                grid-template-columns: 1fr;
-                gap: 1rem;
-            }
-
-            .info-container {
-                padding: 1rem !important;
-            }
-
-            .amount-container input {
-                width: 100%;
-            }
-
-            .form-group {
-                padding: 1rem;
-            }
-
-            .name-input {
-                width: 100% !important;
-            }
-
-            .credits-input {
-                width: 80% !important;
-            }
-
-            .earned-credits {
-                width: 80% !important;
-            }
-
-            table {
-                font-size: 0.8rem;
-            }
-
-            th, td {
-                padding: 0.5rem;
-            }
-
-            .button-group {
-                flex-direction: column;
-                gap: 0.5rem;
-            }
-
-            button {
-                width: 100%;
-                padding: 0.75rem;
-            }
-
-            .results-section {
-                padding: 1rem;
-            }
-
-            .datetime-display {
-                flex-direction: column;
-                gap: 0.5rem;
-                padding: 0.75rem;
-            }
-
-            .datetime-label {
-                font-size: 0.8rem;
-            }
-
-            #dataTable th:nth-child(1),
-            #dataTable td:nth-child(1),
-            #dataTable th:nth-child(2),
-            #dataTable td:nth-child(2),
-            #dataTable th:nth-child(3),
-            #dataTable td:nth-child(3),
-            #dataTable th:nth-child(4),
-            #dataTable td:nth-child(4) {
-                width: auto;
-            }
-
-            #resultsTable th:nth-child(1),
-            #resultsTable td:nth-child(1),
-            #resultsTable th:nth-child(2),
-            #resultsTable td:nth-child(2),
-            #resultsTable th:nth-child(3),
-            #resultsTable td:nth-child(3),
-            #resultsTable th:nth-child(4),
-            #resultsTable td:nth-child(4),
-            #resultsTable th:nth-child(5),
-            #resultsTable td:nth-child(5) {
-                width: auto;
-            }
-        }
-    </style>
+    .footer-content {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .footer-text {
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 0.9rem;
+      margin-bottom: 10px;
+    }
+
+    .footer-highlight {
+      color: #ffc107;
+      font-weight: 600;
+    }
+
+    @media (max-width: 768px) {
+      body {
+        padding: 15px 15px 0 15px;
+      }
+      
+      .header h1 {
+        font-size: 2.2rem;
+      }
+      
+      .header p {
+        font-size: 1rem;
+      }
+      
+      .main-card {
+        padding: 20px;
+      }
+      
+      .honeybee {
+        font-size: 16px;
+      }
+      
+      .table-container {
+        overflow-x: scroll;
+      }
+      
+      th, td {
+        padding: 8px 6px;
+        font-size: 0.75rem;
+        min-width: 80px;
+      }
+      
+      .table-input {
+        font-size: 0.75rem;
+        padding: 2px 4px;
+      }
+      
+      .btn-remove {
+        padding: 4px 8px;
+        font-size: 0.7rem;
+        white-space: nowrap;
+      }
+      
+      .section-title {
+        font-size: 1.2rem;
+      }
+      
+      .input-field {
+        font-size: 0.9rem;
+        padding: 10px 12px;
+      }
+      
+      .btn-calculate {
+        font-size: 1rem;
+        padding: 14px;
+      }
+      
+      .reference-section {
+        padding: 0 15px;
+        margin-top: 30px;
+      }
+      
+      .reference-card {
+        padding: 20px;
+      }
+      
+      .reference-title {
+        font-size: 1.1rem;
+        margin-bottom: 20px;
+      }
+      
+      .reference-links {
+        flex-direction: column;
+        gap: 15px;
+      }
+      
+      .reference-link {
+        padding: 14px 18px;
+        gap: 10px;
+      }
+      
+      .reference-icon {
+        font-size: 1.3rem;
+      }
+      
+      .reference-label {
+        font-size: 0.85rem;
+      }
+      
+      .reference-desc {
+        font-size: 0.75rem;
+      }
+      
+      .footer {
+        padding: 20px 15px;
+        margin-top: 30px;
+      }
+      
+      .footer-text {
+        font-size: 0.8rem;
+      }
+      
+      body::before {
+        background-size: 20px 20px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      body {
+        padding: 10px 10px 0 10px;
+      }
+      
+      .header h1 {
+        font-size: 1.8rem;
+      }
+      
+      .header p {
+        font-size: 0.9rem;
+      }
+      
+      .main-card {
+        padding: 15px;
+      }
+      
+      th, td {
+        padding: 6px 4px;
+        font-size: 0.7rem;
+        min-width: 70px;
+      }
+      
+      .table-input {
+        font-size: 0.7rem;
+        padding: 1px 2px;
+      }
+      
+      .btn-remove {
+        padding: 3px 6px;
+        font-size: 0.65rem;
+      }
+      
+      .btn-add {
+        font-size: 0.9rem;
+        padding: 10px 16px;
+      }
+      
+      .btn-calculate {
+        font-size: 0.95rem;
+        padding: 12px;
+      }
+      
+      .reference-section {
+        padding: 0 10px;
+        margin-top: 25px;
+      }
+      
+      .reference-card {
+        padding: 15px;
+      }
+      
+      .reference-title {
+        font-size: 1rem;
+        margin-bottom: 15px;
+      }
+      
+      .reference-links {
+        gap: 12px;
+      }
+      
+      .reference-link {
+        padding: 12px 15px;
+        gap: 8px;
+      }
+      
+      .reference-icon {
+        font-size: 1.2rem;
+      }
+      
+      .reference-label {
+        font-size: 0.8rem;
+      }
+      
+      .reference-desc {
+        font-size: 0.7rem;
+      }
+      
+      .footer {
+        padding: 15px 10px;
+        margin-top: 25px;
+      }
+      
+      .footer-text {
+        font-size: 0.75rem;
+      }
+      
+      body::before {
+        background-size: 15px 15px;
+      }
+    }
+
+    @media (min-width: 1400px) {
+      .container {
+        max-width: 1400px;
+      }
+      
+      .main-card {
+        padding: 50px;
+      }
+      
+      .header h1 {
+        font-size: 3.5rem;
+      }
+      
+      .header p {
+        font-size: 1.3rem;
+      }
+    }
+  </style>
 </head>
 <body>
+  <!-- Floating honeybees -->
+  <div class="honeybee">🐝</div>
+  <div class="honeybee">🐝</div>
+  <div class="honeybee">🐝</div>
+  <div class="honeybee">🐝</div>
+  <div class="honeybee">🐝</div>
+  <div class="honeybee">🐝</div>
 
-    <div class="container">
-        <div class="header">
-            <img src="honeygain.png" alt="Honeygain Banner" class="banner-image">
-            <div class="header-text">
-                <h1>Honeygain Profit Sharing Calculator</h1>
-                <div class="subtitle">
-                    Coded with 🤍 by Alvin | All Rights Reserved
-                </div>
-            </div>
-        </div>
-
-        <div class="input-grid">
-            <!-- Quick Links Container -->
-            <div class="info-container quick-links-container">
-                <h2 class="section-header">Quick Links:</h2>
-                <div class="simple-links">
-                    <a href="https://www.coingecko.com/en/coins/jumptoken" target="_blank" class="simple-link">
-                        📈 Current JMPT Price
-                        <span class="link-subtitle">→ Check on CoinGecko</span>
-                    </a>
-                    <a href="https://www.xe.com/currencyconverter/convert/?Amount=1&From=USD&To=INR" target="_blank" class="simple-link">
-                        💱 USD to INR Rate
-                        <span class="link-subtitle">→ Check on XE.com</span>
-                    </a>
-                </div>
-            </div>
-
-            <div class="info-container amount-container">
-                <label for="totalAmount">Total Amount Earned (₹):</label>
-                <div class="amount-subtitle">💰 Enter Amount after tax/fees:</div>
-                <input type="number" id="totalAmount" placeholder="Amount" required>
-            </div>
-        </div>
-
-        <form id="profitCalculator">
-            <table id="dataTable">
-                <thead>
-                    <tr>
-                        <th>S.No</th>
-                        <th>Name</th>
-                        <th>Credits</th>
-                        <th>Earned</th>
-                    </tr>
-                </thead>
-                <tbody>
-                </tbody>
-            </table>
-            <div class="button-group">
-                <button type="button" onclick="calculateShares()" style="width: auto; min-width: 250px;">
-                    Calculate Individual Earnings
-                </button>
-            </div>
-        </form>
-
-        <div class="results-section" id="results-section">
-            <h2>Results</h2>
-            <div class="datetime-display" id="datetime">
-                <div id="date"><span class="datetime-label">Date:</span> <span id="date-value"></span></div>
-                <div id="time"><span class="datetime-label">Time:</span> <span id="time-value"></span></div>
-            </div>
-            <table id="resultsTable">
-                <thead>
-                    <tr>
-                        <th>S.No</th>
-                        <th>Name</th>
-                        <th>Earned Credits</th>
-                        <th>Contribution [%]</th>
-                        <th>Amount Earned [₹]</th>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
-            <div class="button-group" style="justify-content: center; margin-top: 2rem;">
-                <button type="button" onclick="saveAsImage()" style="width: auto; min-width: 200px; display: flex; flex-direction: column; align-items: center; gap: 0.25rem;">
-                    <span id="totalEarnings">We Earned: ₹0/-</span>
-                    <span>Happy Honeygain 🐝</span>
-                </button>
-            </div>
-        </div>
+  <div class="container">
+    <div class="header">
+      <h1>🍯 Honeygain Calculator</h1>
+      <p>Sweet Earnings, One Byte at a Time!</p>
     </div>
 
-    <script>
-        const contributorData = [
-            { name: 'Alvin | Xiaomi M2004J19PI', lastCredits: 0.0 },
-            { name: 'Alvin | Apple Macos 15.4.1', lastCredits: 0.0 },
-            { name: 'Ananya | Xiaomi 22120RN86I', lastCredits: 0.0 },
-            { name: 'Ananya | Win 10 Dell inc', lastCredits: 0.0 },
-            { name: 'Ganesh | Motorola moto g71', lastCredits: 0.0 },
-            { name: 'Vallabh | Oneplus CPH2381', lastCredits: 0.0 },
-            { name: 'Amulya | Oneplus CPH2423', lastCredits: 0.0 },
-            { name: 'Aditya | Samsung SM-M127G', lastCredits: 0.0 },
-            { name: 'SS | Realme RMX3660', lastCredits: 0.0 }
-        ];
+    <div class="main-card">
+      <div class="section">
+        <div class="section-title">Total Amount</div>
+        <div class="input-group">
+          <label class="input-label">Total amount received (after tax/fees):</label>
+          <input type="number" id="totalAmount" class="input-field" placeholder="Enter total amount..." step="0.01">
+        </div>
+      </div>
 
-        function convertCreditsToMoney() {
-            const creditInput = document.getElementById('creditInput');
-            const moneyResult = document.getElementById('moneyResult');
-            
-            const credits = parseFloat(creditInput.value) || 0;
-            const dollars = (credits / 1000).toFixed(2);
-            
-            moneyResult.textContent = `$${dollars}`;
+      <div class="section">
+        <div class="section-title">Devices</div>
+        <div class="table-container">
+          <table id="devicesTable">
+            <thead>
+              <tr>
+                <th>Device Name</th>
+                <th>Last Credit</th>
+                <th>Current Credit</th>
+                <th>Total Credits</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="devicesTableBody">
+              <tr>
+                <td><input type="text" class="table-input device-name" placeholder="Device name..."></td>
+                <td><input type="number" class="table-input last-credit" placeholder="0" step="1"></td>
+                <td><input type="number" class="table-input current-credit" placeholder="0" step="1"></td>
+                <td class="total-credits">0</td>
+                <td><button class="btn btn-remove" onclick="removeDevice(this)">Remove</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <button class="btn btn-add" onclick="addDevice()">+ Add Device</button>
+      </div>
+
+      <button class="btn btn-calculate" onclick="calculateSplit()">⚡ Calculate Earnings</button>
+
+      <div id="resultsContainer" class="results section" style="display: none;">
+        <div class="section-title">Results</div>
+        <div class="table-container">
+          <table id="resultsTable">
+            <thead>
+              <tr>
+                <th>Device</th>
+                <th>Credits</th>
+                <th>Percentage</th>
+                <th>Amount</th>
+              </tr>
+            </thead>
+            <tbody id="resultsTableBody">
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="reference-section">
+      <div class="container">
+        <div class="reference-card">
+          <div class="reference-title">📊 Quick References</div>
+          <div class="reference-links">
+            <a href="https://www.coingecko.com/en/coins/jumptoken" target="_blank" class="reference-link">
+              <div class="reference-icon">🪙</div>
+              <div class="reference-content">
+                <div class="reference-label">JMPT Price</div>
+                <div class="reference-desc">Latest JumpToken rates</div>
+              </div>
+            </a>
+            <a href="https://www.xe.com/currencyconverter/convert/?Amount=1&From=USD&To=INR" target="_blank" class="reference-link">
+              <div class="reference-icon">💱</div>
+              <div class="reference-content">
+                <div class="reference-label">USD to INR</div>
+                <div class="reference-desc">Live exchange rates</div>
+              </div>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <footer class="footer">
+      <div class="footer-content">
+        <div class="footer-text">
+          Built with <span class="footer-highlight">💛</span> by Alvin, for the Honeygain community
+        </div>
+        <div class="footer-text">
+          <span class="footer-highlight">Calculate • Share • Earn</span>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    function updateTotalCredits(row) {
+      const lastCredit = parseFloat(row.querySelector('.last-credit').value) || 0;
+      const currentCredit = parseFloat(row.querySelector('.current-credit').value) || 0;
+      const totalCredits = currentCredit - lastCredit;
+      row.querySelector('.total-credits').textContent = totalCredits >= 0 ? totalCredits : 0;
+    }
+
+    function addDevice() {
+      const tbody = document.getElementById('devicesTableBody');
+      const newRow = document.createElement('tr');
+      newRow.innerHTML = `
+        <td><input type="text" class="table-input device-name" placeholder="Device name..."></td>
+        <td><input type="number" class="table-input last-credit" placeholder="0" step="1"></td>
+        <td><input type="number" class="table-input current-credit" placeholder="0" step="1"></td>
+        <td class="total-credits">0</td>
+        <td><button class="btn btn-remove" onclick="removeDevice(this)">Remove</button></td>
+      `;
+      tbody.appendChild(newRow);
+      
+      // Add event listeners to new inputs
+      const lastCreditInput = newRow.querySelector('.last-credit');
+      const currentCreditInput = newRow.querySelector('.current-credit');
+      
+      lastCreditInput.addEventListener('input', () => updateTotalCredits(newRow));
+      currentCreditInput.addEventListener('input', () => updateTotalCredits(newRow));
+    }
+
+    function removeDevice(button) {
+      const rows = document.querySelectorAll('#devicesTableBody tr');
+      if (rows.length > 1) {
+        button.closest('tr').remove();
+      } else {
+        alert('You must have at least one device!');
+      }
+    }
+
+    function calculateSplit() {
+      const totalAmount = parseFloat(document.getElementById('totalAmount').value) || 0;
+      
+      if (totalAmount <= 0) {
+        alert('Please enter a valid total amount!');
+        return;
+      }
+
+      const devices = [];
+      const deviceRows = document.querySelectorAll('#devicesTableBody tr');
+      let totalCreditsSum = 0;
+
+      deviceRows.forEach(row => {
+        const name = row.querySelector('.device-name').value.trim();
+        const lastCredit = parseFloat(row.querySelector('.last-credit').value) || 0;
+        const currentCredit = parseFloat(row.querySelector('.current-credit').value) || 0;
+        const totalCredits = Math.max(0, currentCredit - lastCredit);
+
+        if (name && totalCredits > 0) {
+          devices.push({ name, totalCredits });
+          totalCreditsSum += totalCredits;
         }
+      });
 
-        function calculateEarnedCredits(input) {
-            const row = input.closest('tr');
-            const lastCredits = parseFloat(row.querySelector('.last-credits-info').textContent.replace('Last Earned: ', '').replace(' Credits', '')) || 0;
-            const currentCredits = parseFloat(input.value) || 0;
-            const earnedCreditsInput = row.querySelector('.earned-credits');
-            
-            const earnedCredits = Math.max(0, currentCredits - lastCredits);
-            earnedCreditsInput.value = earnedCredits.toFixed(2);
-        }
+      if (devices.length === 0 || totalCreditsSum === 0) {
+        alert('Please add at least one device with valid credits!');
+        return;
+      }
 
-        function calculateShares() {
-            const rows = document.querySelectorAll('#dataTable tbody tr');
-            const totalAmount = parseFloat(document.getElementById('totalAmount').value) || 0;
-            const resultsTable = document.getElementById('resultsTable').querySelector('tbody');
-            resultsTable.innerHTML = '';
-            
-            document.querySelector('.results-section').style.display = 'block';
-            document.getElementById('totalEarnings').textContent = `We Earned: ₹${totalAmount}/-`;
+      // Calculate split
+      const results = devices.map(device => ({
+        name: device.name,
+        credits: device.totalCredits,
+        percentage: (device.totalCredits / totalCreditsSum) * 100,
+        amount: (device.totalCredits / totalCreditsSum) * totalAmount
+      }));
 
-            let totalEarnedCredits = 0;
-            const contributors = [];
+      displayResults(results, totalAmount, totalCreditsSum);
+    }
 
-            rows.forEach((row, index) => {
-                const name = row.querySelector('td:nth-child(2) input').value;
-                const lastCredits = parseFloat(row.querySelector('.last-credits-info').textContent.replace('Last Earned: ', '').replace(' Credits', '')) || 0;
-                const earnedCredits = parseFloat(row.querySelector('.earned-credits').value) || 0;
-                
-                if (name && earnedCredits > 0) {
-                    contributors.push({ name, earnedCredits, lastCredits });
-                    totalEarnedCredits += earnedCredits;
-                }
-            });
+    function displayResults(results, totalAmount, totalCredits) {
+      const container = document.getElementById('resultsContainer');
+      const tbody = document.getElementById('resultsTableBody');
+      
+      let html = '';
+      
+      results.forEach(result => {
+        html += `
+          <tr>
+            <td>${result.name}</td>
+            <td>${result.credits}</td>
+            <td>${result.percentage.toFixed(1)}%</td>
+            <td>₹${result.amount.toFixed(2)}</td>
+          </tr>
+        `;
+      });
+      
+      html += `
+        <tr class="result-highlight">
+          <td><strong>Total</strong></td>
+          <td><strong>${totalCredits}</strong></td>
+          <td><strong>100%</strong></td>
+          <td><strong>₹${totalAmount.toFixed(2)}</strong></td>
+        </tr>
+      `;
+      
+      tbody.innerHTML = html;
+      container.style.display = 'block';
+      container.scrollIntoView({ behavior: 'smooth' });
+    }
 
-            if (totalEarnedCredits === 0 || totalAmount === 0) {
-                alert('Please enter valid data and amount to calculate shares.');
-                document.querySelector('.results-section').style.display = 'none';
-                return;
-            }
-
-            contributors.forEach((contributor, index) => {
-                const percentage = ((contributor.earnedCredits / totalEarnedCredits) * 100).toFixed(2);
-                const earned = ((percentage / 100) * totalAmount).toFixed(2);
-
-                resultsTable.insertAdjacentHTML('beforeend', `
-                    <tr>
-                        <td>${index + 1}</td>
-                        <td>
-                            ${contributor.name}
-                            <div class="last-credits-info">Last Earned: ${contributor.lastCredits.toFixed(2)} Credits</div>
-                        </td>
-                        <td>${contributor.earnedCredits.toFixed(2)}</td>
-                        <td>${percentage}%</td>
-                        <td>₹${earned}</td>
-                    </tr>
-                `);
-            });
-            
-            updateDateTime();
-        }
-
-        function saveAsImage() {
-            const element = document.querySelector('.results-section');
-            
-            // Store original styles
-            const originalStyles = {
-                background: element.style.background,
-                backgroundColor: element.style.backgroundColor
-            };
-
-            // Store all child elements that need style preservation
-            const elementsToPreserve = element.querySelectorAll('.datetime-display, table, th, td, .button-group, button');
-            const originalChildStyles = new Map();
-
-            elementsToPreserve.forEach(el => {
-                originalChildStyles.set(el, {
-                    background: el.style.background,
-                    backgroundColor: el.style.backgroundColor,
-                    borderColor: el.style.borderColor
-                });
-            });
-
-            // Apply temporary styles for capture
-            element.style.background = 'linear-gradient(145deg, #1E293B, #0F172A)';
-            element.style.backgroundColor = '#1E293B';
-
-            // Ensure child elements maintain their styles
-            elementsToPreserve.forEach(el => {
-                if (el.classList.contains('datetime-display')) {
-                    el.style.background = 'rgba(255, 255, 255, 0.03)';
-                    el.style.borderColor = '#334155';
-                }
-                if (el.tagName === 'TABLE') {
-                    el.style.background = 'linear-gradient(145deg, #1E293B, #0F172A)';
-                    el.style.borderColor = '#334155';
-                }
-                if (el.tagName === 'TH') {
-                    el.style.backgroundColor = 'rgba(255, 255, 255, 0.03)';
-                    el.style.borderColor = '#334155';
-                }
-                if (el.tagName === 'TD') {
-                    el.style.borderColor = '#334155';
-                }
-                if (el.tagName === 'BUTTON') {
-                    el.style.background = 'linear-gradient(135deg, #22c1da, #06a1bc)';
-                }
-            });
-
-            // Capture the image
-            html2canvas(element, {
-                backgroundColor: null,
-                scale: 2,
-                logging: false,
-                useCORS: true
-            }).then(canvas => {
-                // Restore original styles
-                element.style.background = originalStyles.background;
-                element.style.backgroundColor = originalStyles.backgroundColor;
-
-                // Restore child elements' original styles
-                elementsToPreserve.forEach(el => {
-                    const originalStyle = originalChildStyles.get(el);
-                    el.style.background = originalStyle.background;
-                    el.style.backgroundColor = originalStyle.backgroundColor;
-                    el.style.borderColor = originalStyle.borderColor;
-                });
-
-                // Create and trigger download
-                const link = document.createElement('a');
-                link.download = `HoneygainResults_${new Date().toLocaleDateString('en-US').replace(/\//g, '-')}.png`;
-                link.href = canvas.toDataURL('image/png');
-                link.click();
-            });
-        }
-
-        function updateDateTime() {
-            const now = new Date();
-            const dateString = now.toLocaleDateString('en-US', {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric'
-            });
-            const timeString = now.toLocaleString('en-US', {
-                hour: '2-digit',
-                minute: '2-digit',
-                hour12: true
-            });
-            document.getElementById('date-value').textContent = dateString;
-            document.getElementById('time-value').textContent = timeString;
-        }
-
-        window.onload = function() {
-            const tbody = document.getElementById('dataTable').querySelector('tbody');
-            tbody.innerHTML = ''; // Clear existing rows
-            
-            contributorData.forEach((contributor, index) => {
-                tbody.insertAdjacentHTML('beforeend', `
-                    <tr>
-                        <td>${index + 1}</td>
-                        <td>
-                            <input type="text" class="name-input" placeholder="Enter name" value="${contributor.name}">
-                            <div class="last-credits-info">Last Earned: ${contributor.lastCredits.toFixed(2)} Credits</div>
-                        </td>
-                        <td><input type="number" placeholder="Current Credits" class="credits-input" oninput="calculateEarnedCredits(this)" step="0.01" min="0"></td>
-                        <td><input type="number" placeholder="Earned" class="earned-credits" readonly step="0.01"></td>
-                    </tr>
-                `);
-            });
-
-            document.getElementById('creditInput').addEventListener('input', convertCreditsToMoney);
-            
-            updateDateTime();
-            setInterval(updateDateTime, 1000);
-        };
-    </script>
+    // Add event listeners to initial device inputs
+    document.addEventListener('DOMContentLoaded', function() {
+      const initialRow = document.querySelector('#devicesTableBody tr');
+      const lastCreditInput = initialRow.querySelector('.last-credit');
+      const currentCreditInput = initialRow.querySelector('.current-credit');
+      
+      lastCreditInput.addEventListener('input', () => updateTotalCredits(initialRow));
+      currentCreditInput.addEventListener('input', () => updateTotalCredits(initialRow));
+    });
+  </script>
 </body>
 </html>
